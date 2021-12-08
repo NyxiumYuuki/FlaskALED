@@ -1,0 +1,48 @@
+<div class="myContainer">
+
+    <h3>Ajouter un utilisateur</h3>
+
+    <mat-divider style="margin: 20px 0px 20px 0px"></mat-divider>
+
+    <!-- login -->
+    <mat-form-field appearance="fill">
+        <mat-label>Pseudo</mat-label>
+        <input matInput type="text" [(ngModel)]="person.login" required>
+    </mat-form-field><br>
+
+    <!-- email -->
+    <mat-form-field appearance="fill">
+        <mat-label>Email</mat-label>
+        <input matInput type="text" [(ngModel)]="person.email" required>
+    </mat-form-field><br>
+
+    <!-- mot de passe -->
+    <mat-form-field appearance="fill">
+        <mat-label>Mot de passe</mat-label>
+        <input matInput type="password" [(ngModel)]="password" required>
+    </mat-form-field><br>
+
+    <!-- confirmation mot de passe -->
+    <mat-form-field appearance="fill">
+        <mat-label>Confirmation mot de passe</mat-label>
+        <input matInput type="password" [(ngModel)]="confirmPassword" required>
+    </mat-form-field><br>
+
+    <!-- role -->
+    <label id="label-radio-group">Rôle: &nbsp;</label>
+    <mat-radio-group aria-labelledby="label-radio-group" [(ngModel)]="person.role">
+        <mat-radio-button value="user" checked>Utilisateur &nbsp;</mat-radio-button>
+        <mat-radio-button value="admin">Admin</mat-radio-button>
+    </mat-radio-group><br><br>
+
+    <mat-divider style="margin-bottom: 10px"></mat-divider>
+
+    <!-- message d'erreur -->
+    <div *ngIf="hasError">
+        <mat-error>{{errorMessage}}</mat-error>
+    </div>
+
+    <!-- bouton -->
+    <button mat-button (click)="onValider()">Valider</button>
+
+</div>
