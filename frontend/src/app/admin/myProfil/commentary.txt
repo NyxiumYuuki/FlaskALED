@@ -1,0 +1,7 @@
+La page "admin/myProfil" contient:
+    - les informations de l'admin (composant "page-profil")
+    - un bouton "modifier profil" pour modifier les informations de l'admin (composant "popup-update-profil")
+
+Cette page est la même que la page de la partie utilisateur.
+
+Ainsi, on a rangé cette page dans le dossier "common/components/profil".
