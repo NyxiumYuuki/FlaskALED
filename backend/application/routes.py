@@ -1,7 +1,6 @@
 from flask import current_app as app
 from flask import request
-from logs_model import db
-from users_model import Users, db
+from .users_model import Users, db
 from responses import send_message, send_error
 
 
@@ -16,10 +15,10 @@ def login():
 def register():
     post_email = str(request.form['email'])
     post_login = str(request.form['login'])
-    post_hashPass = str(request.form['hashPass'])
+    post_hash_pass = str(request.form['hashPass'])
     post_role = str(request.form['role'])
 
-    if post_email and post_login and post_hashPass and post_role:
+    if post_email and post_login and post_hash_pass and post_role:
         user = Users.query.filter(
             Users.email == post_email or Users.login == post_login
         ).first()
@@ -28,7 +27,7 @@ def register():
         user = Users(
             email=post_email,
             login=post_login,
-            hashPass=post_hashPass,
+            hashPass=post_hash_pass,
             role=post_role
         )
         db.session.add(user)
@@ -58,9 +57,9 @@ def user_delete():
 
 
 # Admin : Create User
-@app.route('/api/user/create', methods=['POST'])
+@app.route('/api/admin/create/user/', methods=['POST'])
 def user_create():
-    return send_message('User.create not implemented', None)
+    return send_message('Admin.create.user not implemented', None)
 
 
 # Admin : Change User password
