@@ -1,14 +1,14 @@
-from app import db1
+from . import db
 
 
-class Users(db1.Model):
-    __tablename__ = 'users'
+class Users(db.Model):
+    __bind_key__ = 'users'
 
-    id = db1.Column(db1.Integer, primary_key=True)
-    email = db1.Column(db1.String())
-    login = db1.Column(db1.String())
-    hashPass = db1.Column(db1.String())
-    role = db1.Column(db1.String())
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String())
+    login = db.Column(db.String())
+    hashPass = db.Column(db.String())
+    role = db.Column(db.String())
 
     def __init__(self, email, login, hash_pass, role):
         self.email = email

@@ -1,5 +1,8 @@
-from app import app
-from responses import send_message, send_error
+from flask import current_app as app
+from flask import request
+from .logs_model import Logs, db
+from .users_model import Users, db
+from .responses import send_message, send_error
 
 
 # Login
@@ -11,7 +14,29 @@ def login():
 # Register
 @app.route('/api/register', methods=['POST'])
 def register():
-    return send_message('Register not implemented', None)
+    post_email = str(request.form['email'])
+    post_login = str(request.form['login'])
+    post_hashPass = str(request.form['hashPass'])
+    post_role = str(request.form['role'])
+
+    if post_email and post_login and post_hashPass and post_role:
+        user = Users.query.filter(
+            Users.email == post_email or Users.login == post_login
+        ).first()
+        if user:
+            return send_message(f"{post_email} ({post_login}) already exist.", None)
+        user = Users(
+            email=post_email,
+            login=post_login,
+            hashPass=post_hashPass,
+            role=post_role
+        )
+        db.session.add(user)
+        db.session.commit()
+        return send_message('User registered.', user)
+
+    else:
+        return send_error(400, 'POST Request Error : Need email, login, hashPass and role fields.')
 
 
 # Logout

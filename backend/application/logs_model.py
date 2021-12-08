@@ -1,16 +1,16 @@
-from app import db2
+from . import db
 
 
-class Logs(db2.Model):
-    __tablename__ = 'logs'
+class Logs(db.Model):
+    __bind_key__ = 'logs'
 
-    id = db2.Column(db2.Integer, primary_key=True)
-    date = db2.Column(db2.Date())
-    user = db2.Column(db2.String())
-    ip = db2.Column(db2.String())
-    table = db2.Column(db2.String())
-    action = db2.Column(db2.String())
-    status = db2.Column(db2.String())
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.Date())
+    user = db.Column(db.String())
+    ip = db.Column(db.String())
+    table = db.Column(db.String())
+    action = db.Column(db.String())
+    status = db.Column(db.String())
 
     def __init__(self, date, user, ip, table, action, status):
         self.date = date
