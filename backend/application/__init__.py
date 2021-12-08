@@ -26,8 +26,10 @@ def create_app():
     else:
         print('ENV Variables passed : ', app.config['SQLALCHEMY_BINDS'])
 
-    db.init_app(app)
-    with app.app_context():
-        from . import routes
-        db.create_all()
-        return app
+    # import routes
+    return app
+
+    # db.init_app(app)
+    # db.create_all()
+
+    # return app
