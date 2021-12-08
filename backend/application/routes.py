@@ -1,11 +1,10 @@
-# from application import app
-# from ..run import app
+from flask import current_app as app
 from flask import request
 from .users_model import Users, db
-from responses import send_message, send_error
+from .responses import send_message, send_error
 
 
-
+# Login
 @app.route('/api/login', methods=['POST'])
 def login():
     return send_message('Login not implemented', None)

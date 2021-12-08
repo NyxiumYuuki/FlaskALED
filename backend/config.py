@@ -8,7 +8,6 @@ class Config(object):
     TESTING = False
     CSRF_ENABLED = True
 
-    PORT = int(os.environ.get('PORT', 33507))
     SECRET_KEY = os.environ.get('SECRET_KEY', None)
     FLASK_APP = os.environ.get('FLASK_APP', None)
     FLASK_ENV = os.environ.get('FLASK_ENV', None)

@@ -9,7 +9,7 @@ patch_all()
 
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, instance_relative_config=False)
     FLASK_ENV = os.environ.get('FLASK_ENV', None)
     if FLASK_ENV == 'production':
         app.config.from_object("config.ProductionConfig")
@@ -26,10 +26,9 @@ def create_app():
     else:
         print('ENV Variables passed : ', app.config['SQLALCHEMY_BINDS'])
 
-    # import routes
-    return app
-
     # db.init_app(app)
-    # db.create_all()
+    with app.app_context():
+        from . import routes
+        # db.create_all()
 
-    # return app
+    return app
