@@ -1,0 +1,49 @@
+<div class="myContainer">
+
+
+    <!-- navbar -->
+    <app-navbar pour="register"></app-navbar>
+
+
+    <!-- contenu -->
+    <div class="boite">
+
+        <!-- login -->
+        <mat-form-field appearance="fill">
+            <mat-label>Pseudo</mat-label>
+            <input matInput type="text" [(ngModel)]="person.login" required>
+        </mat-form-field><br>
+
+        <!-- email -->
+        <mat-form-field appearance="fill">
+            <mat-label>Email</mat-label>
+            <input matInput type="text" [(ngModel)]="person.email" required>
+        </mat-form-field><br>
+
+        <!-- Mot de passe -->
+        <mat-form-field appearance="fill">
+            <mat-label>Mot de passe</mat-label>
+            <input matInput type="password" [(ngModel)]="password" required>
+        </mat-form-field><br>
+
+        <!-- Confirmation mot de passe -->
+        <mat-form-field appearance="fill">
+            <mat-label>Confirmation mot de passe</mat-label>
+            <input matInput type="password" [(ngModel)]="confirmPassword" required>
+        </mat-form-field><br>
+
+        <!-- Message d'erreur -->
+        <div *ngIf="hasError">
+            <mat-error>{{errorMessage}}</mat-error>
+        </div>
+
+        <!-- bouton -->
+        <button mat-button style="border: solid 1px black" (click)="onValider()">
+            Valider
+        </button>
+
+    </div>
+
+
+
+</div>

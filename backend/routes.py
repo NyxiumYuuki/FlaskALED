@@ -1,8 +1,8 @@
 from flask import current_app as app
 from flask import request
-from .logs_model import Logs, db
-from .users_model import Users, db
-from .responses import send_message, send_error
+from logs_model import db
+from users_model import Users, db
+from responses import send_message, send_error
 
 
 # Login

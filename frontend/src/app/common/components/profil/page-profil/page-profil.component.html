@@ -1,0 +1,38 @@
+<div class="myContainer">
+
+    <!-- NavBar -->
+    <app-navbar [pour]="from"></app-navbar>
+
+
+    <!-- Boite -->
+    <div class="boite">
+
+        <!-- login -->
+        <div class="row myRow">
+            <div class="col-6 myLabel">Pseudo:</div>
+            <div class="col-6 myValue"> {{person.login}} </div>
+        </div>
+
+        <!-- email -->
+        <div class="row myRow">
+            <div class="col-6 myLabel">Mail:</div>
+            <div class="col-6 myValue"> {{person.email}} </div>
+        </div>
+
+        <!-- role -->
+        <div class="row myRow">
+            <div class="col-6 myLabel">Rôle:</div>
+            <div class="col-6 myValue">
+                <span *ngIf="person.role === 'user'">utilisateur</span>
+                <span *ngIf="person.role === 'admin'">admin</span>
+        </div>
+
+        <!-- Modifier profil -->
+        <div class="btnContainer">
+            <button mat-button class="myBtn" (click)="onModifier()">Modifier profil</button>
+        </div>
+
+    </div>
+
+
+</div>
