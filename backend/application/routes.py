@@ -58,9 +58,9 @@ def user_delete():
 
 
 # Admin : Create User
-@app.route('/api/user/create', methods=['POST'])
+@app.route('/api/admin/create/user', methods=['POST'])
 def user_create():
-    return send_message('User.create not implemented', None)
+    return send_message('Admin.create.user not implemented', None)
 
 
 # Admin : Change User password
