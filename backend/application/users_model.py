@@ -5,10 +5,10 @@ class Users(db.Model):
     __bind_key__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String())
-    login = db.Column(db.String())
-    hashPass = db.Column(db.String())
-    role = db.Column(db.String())
+    email = db.Column(db.String(), nullable=False)
+    login = db.Column(db.String(), nullable=False)
+    hashPass = db.Column(db.String(), nullable=False)
+    isAdmin = db.Column(db.Boolean, default=False, nullable=False)
 
     def __init__(self, email, login, hash_pass, role):
         self.email = email
