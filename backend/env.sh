@@ -1,6 +1,6 @@
-export FLASK_APP=app.py
-export FLASK_ENV=development
-export FLASK_DEBUG=1
-export PYTHONUNBUFFERED=1
-export DATABASE_URL_1=postgresql://localhost:5433/users
-export DATABASE_URL_2=postgresql://localhost:5433/logs
+set FLASK_APP=app.py
+set FLASK_ENV=development
+set FLASK_DEBUG=1
+set PYTHONUNBUFFERED=1
+set DATABASE_URL_1=postgresql://localhost:5433/users
+set DATABASE_URL_2=postgresql://localhost:5434/logs

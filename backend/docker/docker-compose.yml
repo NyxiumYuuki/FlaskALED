@@ -1,0 +1,20 @@
+version: '3.1'
+
+services:
+  flaskaled-db1:
+    image: postgres:latest
+    env_file:
+      - flaskaled-db1.env
+    volumes:
+      - flaskaled-db1-data:/var/lib/postgresql/data/
+
+  flaskaled-db2:
+    image: postgres:latest
+    env_file:
+      - flaskaled-db2.env
+    volumes:
+      - flaskaled-db2-data:/var/lib/postgresql/data/
+
+volumes:
+  flaskaled-db1:
+  flaskaled-db2:
