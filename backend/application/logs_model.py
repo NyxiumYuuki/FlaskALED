@@ -1,16 +1,15 @@
 from . import db
 
-
 class Logs(db.Model):
     __bind_key__ = 'logs'
 
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date(), nullable=False)
-    user = db.Column(db.String(), nullable=False)
+    id_user = db.Column(db.Integer, nullable=False)
     ip = db.Column(db.String(), nullable=False)
     table = db.Column(db.String(), nullable=False)
     action = db.Column(db.String(), nullable=False)
-    status = db.Column(db.String(), nullable=False)
+    has_succeeded = db.Column(db.Boolean, nullable=False)
     status_code = db.Column(db.Integer, nullable=False)
 
     def __init__(self, date, user, ip, table, action, status):

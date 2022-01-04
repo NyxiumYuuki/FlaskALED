@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  flaskaled-db1:
+    image: postgres:latest
+    container_name: flaskaled-db1
+    ports:
+      - 5433:5432
+    volumes:
+      - ./init-db1.sql:/docker-entrypoint-initdb.d/init-db1.sql
+    environment:
+      - POSTGRES_USER=flaskaled1
+      - POSTGRES_PASSWORD=aled1
+      - POSTGRES_DB=flaskaledDb1
+    restart: unless-stopped
+
+  flaskaled-db2:
+    image: postgres:latest
+    container_name: flaskaled-db2
+    ports:
+      - 5434:5432
+    volumes:
+      - ./init-db2.sql:/docker-entrypoint-initdb.d/init-db2.sql
+    environment:
+      - POSTGRES_USER=flaskaled2
+      - POSTGRES_PASSWORD=aled2
+      - POSTGRES_DB=flaskaledDb2
+    restart: unless-stopped
