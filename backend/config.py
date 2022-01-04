@@ -17,8 +17,8 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI_1 = os.environ.get('DATABASE_URL_1', None)
     SQLALCHEMY_DATABASE_URI_2 = os.environ.get('DATABASE_URL_2', None)
     SQLALCHEMY_BINDS = {
-        'users': SQLALCHEMY_DATABASE_URI_1,
-        'logs': SQLALCHEMY_DATABASE_URI_2
+        'flaskaled-srv1': SQLALCHEMY_DATABASE_URI_1,
+        'flaskaled-srv2': SQLALCHEMY_DATABASE_URI_2
     }
 
 
