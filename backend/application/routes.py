@@ -1,41 +1,47 @@
 from flask import current_app as app
 from flask import request
-from .users_model import Users, db
 from .responses import send_message, send_error
+from .api_functions import db_login, db_register
 
 
 # Login
 @app.route('/api/login', methods=['POST'])
 def login():
-    return send_message('Login not implemented', None)
+    post_json = request.json
+    post_email = str(post_json['email'])
+    post_password = str(post_json['password'])
+    if post_email and post_password:
+        ip = request.remote_addr
+        res = db_login(ip, post_email, post_password)
+        # TODO: Token Authentication
+        if res['status'] == 0:
+            return send_message(res['message'], res['data'])
+        elif res['status'] == 1:
+            return send_error(500, res['message'])
+        elif res['status'] == 2:
+            return send_error(404, res['message'])
+    else:
+        return send_error(400, 'POST Request Error : Need email, password fields.')
 
 
 # Register
 @app.route('/api/register', methods=['POST'])
 def register():
-    post_email = str(request.form['email'])
-    post_login = str(request.form['login'])
-    post_hash_pass = str(request.form['hashPass'])
-    post_role = str(request.form['role'])
+    post_json = request.json
+    post_email = str(post_json['email'])
+    post_login = str(post_json['login'])
+    post_password = str(post_json['password'])
+    post_is_admin = bool(post_json['is_admin'])
 
-    if post_email and post_login and post_hash_pass and post_role:
-        user = Users.query.filter(
-            Users.email == post_email or Users.login == post_login
-        ).first()
-        if user:
-            return send_message(f"{post_email} ({post_login}) already exist.", None)
-        user = Users(
-            email=post_email,
-            login=post_login,
-            hashPass=post_hash_pass,
-            role=post_role
-        )
-        db.session.add(user)
-        db.session.commit()
-        return send_message('User registered.', user)
-
+    if post_email and post_login and post_password and post_is_admin:
+        ip = request.remote_addr
+        res = db_register(ip, post_email, post_login, post_password, post_is_admin)
+        if res['status'] == 1:
+            return send_error(500, res['message'])
+        elif res['status'] == 0:
+            return send_message(res['message'], res['data'])
     else:
-        return send_error(400, 'POST Request Error : Need email, login, hashPass and role fields.')
+        return send_error(400, 'POST Request Error : Need email, login, password and is_admin fields.')
 
 
 # Logout
@@ -80,13 +86,7 @@ def admin_delete_user():
     return send_message('Admin.delete.user not implemented', None)
 
 
-# List of User (must be authenticated)
+# List of User (must be authenticated) & Search
 @app.route('/api/users', methods=['GET'])
 def users():
     return send_message('Users not implemented', None)
-
-
-# Search User
-@app.route('/api/users/search', methods=['POST'])
-def users_search():
-    return send_message('Users.search not implemented', None)
