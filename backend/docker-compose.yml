@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  flaskaled-db1:
+  flaskaled-srv1:
     image: postgres:latest
-    container_name: flaskaled-db1
+    container_name: flaskaled-srv1
     ports:
       - 5433:5432
     volumes:
@@ -14,9 +14,9 @@ services:
       - POSTGRES_DB=flaskaledDb1
     restart: unless-stopped
 
-  flaskaled-db2:
+  flaskaled-srv2:
     image: postgres:latest
-    container_name: flaskaled-db2
+    container_name: flaskaled-srv2
     ports:
       - 5434:5432
     volumes:
