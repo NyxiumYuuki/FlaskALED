@@ -2,7 +2,7 @@ from flask import current_app as app
 import json
 
 
-def send_error(status_code, message):
+def send_error(status_code, message, token=None):
     data_json = {
         'status': 'error',
         'message': message
@@ -12,11 +12,13 @@ def send_error(status_code, message):
         status=status_code,
         mimetype='application/json'
     )
-    res.headers['Access-Control-Allow-Origin'] = '*'
+    res.headers['Access-Control-Allow-Origin'] = app.config.get('ALLOW_ORIGIN')
+    if token is not None:
+        res.set_cookie('SESSIONID', token)
     return res
 
 
-def send_message(message, data):
+def send_message(message, data, token=None):
     data_json = {
         'status': 'success',
         'message': message,
@@ -27,5 +29,7 @@ def send_message(message, data):
         status=200,
         mimetype='application/json'
     )
-    res.headers['Access-Control-Allow-Origin'] = '*'
+    res.headers['Access-Control-Allow-Origin'] = app.config.get('ALLOW_ORIGIN')
+    if token is not None:
+        res.set_cookie('SESSIONID', token)
     return res

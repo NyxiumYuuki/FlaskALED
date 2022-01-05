@@ -2,6 +2,7 @@ from flask import current_app as app
 from flask import request
 from .responses import send_message, send_error
 from .api_functions import db_login, db_register
+from .sessionJWT import create_auth_token, decode_auth_token, check_auth_token
 
 
 # Login
@@ -15,7 +16,9 @@ def login():
         res = db_login(ip, post_email, post_password)
         # TODO: Token Authentication
         if res['status'] == 0:
-            return send_message(res['message'], res['data'])
+            user = res['data']
+            token = create_auth_token(res['data'])
+            return send_message(res['message'], user, token)
         elif res['status'] == 1:
             return send_error(404, res['message'])
     else:
@@ -42,9 +45,14 @@ def register():
 
 
 # Logout
-@app.route('/api/logout', methods=['POST'])
+@app.route('/api/logout', methods=['DELETE'])
 def logout():
-    return send_message('Logout not implemented', None)
+    token = check_auth_token(request, 'X-Access-Token')
+    if token['success']:
+        return send_message('User disconnected.', None)
+    else:
+        return send_error(500, token['message'])
+
 
 
 # Update User

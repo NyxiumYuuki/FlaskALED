@@ -8,7 +8,6 @@ class Config(object):
     TESTING = False
     CSRF_ENABLED = True
 
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'default_secret_key')
     FLASK_APP = os.environ.get('FLASK_APP', None)
     FLASK_ENV = os.environ.get('FLASK_ENV', None)
 
@@ -20,6 +19,9 @@ class Config(object):
         'flaskaled-srv1': SQLALCHEMY_DATABASE_URI_1,
         'flaskaled-srv2': SQLALCHEMY_DATABASE_URI_2
     }
+
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'default_secret_key')
+    ALLOW_ORIGIN = os.environ.get('ALLOW_ORIGIN', '*')
 
 
 class ProductionConfig(Config):
