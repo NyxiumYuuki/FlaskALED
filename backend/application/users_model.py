@@ -36,12 +36,6 @@ class Users(db.Model):
             'is_admin': self.is_admin
         }
 
-    def get_id(self):
-        return self.id
-
-    def get_salt(self):
-        return self.salt
-
     def auth_token(self):
         try:
             time = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')

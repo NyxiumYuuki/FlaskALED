@@ -17,8 +17,6 @@ def login():
         if res['status'] == 0:
             return send_message(res['message'], res['data'])
         elif res['status'] == 1:
-            return send_error(500, res['message'])
-        elif res['status'] == 2:
             return send_error(404, res['message'])
     else:
         return send_error(400, 'POST Request Error : Need email, password fields.')

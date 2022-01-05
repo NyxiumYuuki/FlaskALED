@@ -7,38 +7,31 @@ from .logs_model import Logs
 
 
 def hash_password(salt, password):
-    return hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt,  100000)
+    return hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
 
 
 def db_login(ip, email, password):
     user = Users.query.filter(
         Users.email == email
     ).first()
-    if not user:
-        message = f'Email or password invalid'
+
+    # Check User and Hash Pass
+    if user and user.hash_pass == hash_password(user.salt, password):
+        message = 'User authenticated.'
         log = Logs(
             date=datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
-            id_user=None,
+            id_user=user.id,
             ip=ip,
             table='users',
             action='login',
             message=message,
-            has_succeeded=False,
-            status_code=1
+            has_succeeded=True,
+            status_code=0
         )
         db.session.add(log)
         db.session.commit()
-        return {'status': 1, 'message': message}  # User does not exist
-
-    # Check Hash Pass
-    salt = user.get_salt()
-    hash_pass = hash_password(salt, password)
-
-    user = Users.query\
-        .filter(Users.email == email, Users.hash_pass == hash_pass)\
-        .first()
-
-    if not user:
+        return {'status': 0, 'message': message, 'data': user.json()}
+    else:
         message = f'Email or password invalid'
         log = Logs(
             date=datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
@@ -52,22 +45,7 @@ def db_login(ip, email, password):
         )
         db.session.add(log)
         db.session.commit()
-        return {'status': 2, 'message': message}  # Email or password invalid
-    else:
-        message = 'User authenticated.'
-        log = Logs(
-            date=datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
-            id_user=user.get_id(),
-            ip=ip,
-            table='users',
-            action='login',
-            message=message,
-            has_succeeded=True,
-            status_code=0
-        )
-        db.session.add(log)
-        db.session.commit()
-        return {'status': 0, 'message': message, 'data': user.json()}
+        return {'status': 1, 'message': message}  # Email or password invalid
 
 
 def db_register(ip, email, password, is_admin):
@@ -92,7 +70,6 @@ def db_register(ip, email, password, is_admin):
 
     # Salt Hash Pass with SHA256
     salt = os.urandom(32)
-    print('salt:         ', salt)
     hash_pass = hash_password(salt, password)
 
     user = Users(
