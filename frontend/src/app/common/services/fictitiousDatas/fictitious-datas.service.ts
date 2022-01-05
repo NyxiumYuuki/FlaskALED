@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {Person} from "../../interfaces/Person";
+
 
 @Injectable({
   providedIn: 'root'
@@ -7,33 +7,33 @@ import {Person} from "../../interfaces/Person";
 export class FictitiousDatasService
 {
 
-    getUser(): Person
+    getUser()
     {
         const id = (Math.floor(Math.random()*100000)).toString()
         return {
             id: id,
-            login: "Riri"+id,
+            nickname: "Riri"+id,
             email: "riri"+id+"@gmail.com",
-            hashPass: "blablabla",
-            role: "user",
+            hash_pass: "blablabla",
+            is_admin: false,
         }
     }
 
-    getAdmin(): Person
+    getAdmin()
     {
         const id = (Math.floor(Math.random()*100000)).toString()
         return {
             id: id,
-            login: "Fifi"+id,
+            nickname: "Fifi"+id,
             email: "fifi"+id+"@gmail.com",
-            hashPass: "blablabla",
-            role: "admin",
+            hash_pass: "blablabla",
+            is_admin: true,
         }
     }
 
-    getTabPerson(n: number): Person[]
+    getTabPerson(n: number)
     {
-        let tab: Person[] = [];
+        let tab = [];
 
         for(let i=0 ; i<n ; i++)
         {

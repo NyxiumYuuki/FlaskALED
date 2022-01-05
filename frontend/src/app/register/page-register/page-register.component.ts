@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import {Person} from "../../common/interfaces/Person";
 import {HashageService} from "../../common/services/hashage/hashage.service";
 import {Router} from "@angular/router";
 import {CheckEmailService} from "../../common/services/checkEmail/check-email.service";
@@ -15,11 +14,11 @@ import {PopupConfirmRegisterComponent} from "../popup-confirm-register/popup-con
 })
 export class PageRegisterComponent
 {
-    person: Person = {
+    person = {
         id: "",
-        login: "",
+        nickname: "",
         email: "",
-        hashPass: "",
+        hash_pass: "",
         role: "user"
     };
     password: string = "";
@@ -40,7 +39,7 @@ export class PageRegisterComponent
         this.checkField();
         if(!this.hasError)
         {
-            this.person.hashPass = this.hashageService.run(this.password);
+            this.person.hash_pass = this.hashageService.run(this.password);
 
             // FAUX CODE
             const retour = { status: "succes", data: {} };
@@ -76,7 +75,7 @@ export class PageRegisterComponent
     // Check les champs saisis par l'utilisateur
     checkField(): void
     {
-        if(this.person.login.length === 0) {
+        if(this.person.nickname.length === 0) {
             this.errorMessage = "Veuillez remplir le champ 'pseudo'.";
             this.hasError = true;
         }

@@ -4,10 +4,10 @@
 
     <mat-divider style="margin: 20px 0px 20px 0px"></mat-divider>
 
-    <!-- login -->
+    <!-- nickname -->
     <mat-form-field appearance="fill">
         <mat-label>Pseudo</mat-label>
-        <input matInput type="text" [(ngModel)]="person.login" required>
+        <input matInput type="text" [(ngModel)]="person.nickname" required>
     </mat-form-field><br>
 
     <!-- email -->
@@ -29,10 +29,9 @@
     </mat-form-field><br>
 
     <!-- role -->
-    <label id="label-radio-group">Rôle: &nbsp;</label>
-    <mat-radio-group aria-labelledby="label-radio-group" [(ngModel)]="person.role">
-        <mat-radio-button value="user" checked>Utilisateur &nbsp;</mat-radio-button>
-        <mat-radio-button value="admin">Admin</mat-radio-button>
+    <mat-radio-group aria-labelledby="label-radio-group" [(ngModel)]="person.is_admin">
+        <mat-radio-button [value]="false" checked>Utilisateur &nbsp;</mat-radio-button>
+        <mat-radio-button [value]="true">Admin</mat-radio-button>
     </mat-radio-group><br><br>
 
     <mat-divider style="margin-bottom: 10px"></mat-divider>

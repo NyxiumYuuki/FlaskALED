@@ -1,0 +1,14 @@
+<mat-dialog-content class="mat-typography" *ngIf="me">
+    Êtes-vous sûr de vouloir supprimer votre compte ?
+</mat-dialog-content>
+
+
+<mat-dialog-content class="mat-typography" *ngIf="!me">
+    Êtes-vous sûr de vouloir supprimer <i>{{email}}</i> ?
+</mat-dialog-content>
+
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="dialogRef.close();">Annuler</button>
+    <button mat-button (click)="onValider()" cdkFocusInitial>Valider</button>
+</mat-dialog-actions>

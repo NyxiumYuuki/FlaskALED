@@ -1,0 +1,53 @@
+<div class="myContainer">
+
+    <!-- NavBar -->
+    <app-navbar [pour]="from"></app-navbar>
+
+
+    <!-- Boite -->
+    <div class="boite">
+
+        <!-- nickname -->
+        <div class="row myRow">
+            <div class="col-6 myLabel">Pseudo:</div>
+            <div class="col-6 myValue"> {{person.nickname}} </div>
+        </div>
+
+        <!-- email -->
+        <div class="row myRow">
+            <div class="col-6 myLabel">Mail:</div>
+            <div class="col-6 myValue"> {{person.email}} </div>
+        </div>
+
+        <!-- role -->
+        <div class="row myRow">
+            <div class="col-6 myLabel">Rôle:</div>
+            <div class="col-6 myValue">
+                <span *ngIf="!person.is_admin">utilisateur</span>
+                <span *ngIf="person.is_admin">admin</span>
+        </div>
+
+        <!-- boutons -->
+        <div class="row">
+            <!-- bouton modifier -->
+            <div class="col-6">
+                <div class="btnContainer">
+                    <button mat-button class="myBtn" (click)="onModifier()">
+                        <mat-icon>edit</mat-icon> Modifier compte <mat-icon>edit</mat-icon>
+                    </button>
+                </div>
+            </div>
+            <!-- bouton supprimer -->
+            <div class="col-6">
+                <div class="btnContainer">
+                    <button mat-button class="myBtn" (click)="onSupprimer()">
+                        <mat-icon>delete</mat-icon> Supprimer compte <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>

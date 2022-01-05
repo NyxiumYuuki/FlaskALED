@@ -6,7 +6,7 @@ import {HashageService} from "../../common/services/hashage/hashage.service";
 
 
 @Component({
-  selector: 'app-page-login',
+  selector: 'app-page-nickname',
   templateUrl: './page-login.component.html',
   styleUrls: ['./page-login.component.scss']
 })
@@ -31,7 +31,7 @@ export class PageLoginComponent
         {
             let data = {
                 email: this.email,
-                hashPass: this.hashageService.run(this.password)
+                hash_pass: this.hashageService.run(this.password)
             };
             console.log(data);
             /*

@@ -1,13 +1,6 @@
 <div>
 
-    <app-navbar pour="admin"></app-navbar>
-
-
-    <div class="btnContainer">
-        <button mat-button class="btnAjouter" (click)="onAdd()">
-            <mat-icon>add_circle</mat-icon> Ajouter un utilisateur
-        </button>
-    </div>
+    <app-navbar pour="user"></app-navbar><br><br>
 
 
     <div style="text-align: center">
@@ -18,8 +11,7 @@
     </div>
 
 
-    <table *ngIf="(dataSource !== undefined) && (dataSource !== null) && (dataSource.data.length !== 0)"
-           mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
 
         <!-- Pseudo Column -->
         <ng-container matColumnDef="nickname">
@@ -39,19 +31,6 @@
             <td mat-cell *matCellDef="let person">{{person.role}}</td>
         </ng-container>
 
-        <!-- Actions Column -->
-        <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Actions</th>
-            <td mat-cell *matCellDef="let person">
-                <button mat-icon-button (click)="onUpdate(person)">
-                    <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-icon-button (click)="onDelete(person)">
-                    <mat-icon>delete</mat-icon>
-                </button>
-            </td>
-        </ng-container>
-
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
@@ -61,7 +40,6 @@
                    showFirstLastButtons
                    aria-label="Select page of periodic elements"
                    class="mat-elevation-z8"></mat-paginator>
-
 
 </div>
 <br><br>

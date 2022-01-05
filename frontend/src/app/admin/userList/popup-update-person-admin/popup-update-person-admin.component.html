@@ -6,11 +6,24 @@
         <!-- divider -->
         <br><mat-divider></mat-divider><br>
 
-        <!-- login -->
+        <!-- nickname -->
         <mat-form-field appearance="fill">
             <mat-label>Pseudo</mat-label>
-            <input matInput type="text" [(ngModel)]="personCopy.login">
+            <input matInput type="text" [(ngModel)]="personCopy.nickname" required>
         </mat-form-field><br>
+
+        <!-- divider -->
+        <mat-divider></mat-divider><br>
+
+        <!-- role -->
+        <mat-radio-group [(ngModel)]="personCopy.is_admin">
+            <mat-radio-button [value]="false"
+                              [checked]="!personCopy.is_admin"
+                              (click)="personCopy.role = 'utilisateur'">Utilisateur</mat-radio-button> &nbsp;
+            <mat-radio-button [value]="true"
+                              [checked]="personCopy.is_admin"
+                              (click)="personCopy.role = 'admin'">Admin</mat-radio-button>
+        </mat-radio-group><br><br>
 
         <!-- divider -->
         <mat-divider></mat-divider><br>

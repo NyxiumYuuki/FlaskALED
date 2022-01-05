@@ -11,8 +11,8 @@ import {MatInputModule} from "@angular/material/input";
 import {PageLoginComponent} from "./login/page-login/page-login.component";
 import { NavbarComponent } from './common/components/navbar/navbar.component';
 import {MatButtonModule} from "@angular/material/button";
-import { PageProfilComponent } from './common/components/profil/page-profil/page-profil.component';
-import { PopupUpdateProfilComponent } from './common/components/profil/popup-update-profil/popup-update-profil.component';
+import { PageProfilComponent } from './common/components/page-profil/page-profil.component';
+import { PopupUpdateProfilComponent } from './common/components/popup-update-profil/popup-update-profil.component';
 import {MatDividerModule} from "@angular/material/divider";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatDialogModule} from "@angular/material/dialog";
@@ -22,9 +22,12 @@ import { PopupCreatePersonComponent } from './admin/userList/popup-create-person
 import {MatTableModule} from "@angular/material/table";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import { PopupConfirmRegisterComponent } from './register/popup-confirm-register/popup-confirm-register.component';
-import { PopupDeletePersonComponent } from './admin/userList/popup-delete-person/popup-delete-person.component';
 import {MatIconModule} from "@angular/material/icon";
 import {MatRadioModule} from "@angular/material/radio";
+import { PageRegistryComponent } from './user/page-registry/page-registry.component';
+import { PopupDeleteProfilComponent } from './common/components/popup-delete-profil/popup-delete-profil.component';
+import {MatSortModule} from "@angular/material/sort";
+import { PopupUpdatePersonAdminComponent } from './admin/userList/popup-update-person-admin/popup-update-person-admin.component';
 
 
 
@@ -39,7 +42,9 @@ import {MatRadioModule} from "@angular/material/radio";
     PageUserListComponent,
     PopupCreatePersonComponent,
     PopupConfirmRegisterComponent,
-    PopupDeletePersonComponent
+    PageRegistryComponent,
+    PopupDeleteProfilComponent,
+    PopupUpdatePersonAdminComponent
   ],
     imports: [
         BrowserModule,
@@ -55,6 +60,7 @@ import {MatRadioModule} from "@angular/material/radio";
         MatSnackBarModule,
         MatTableModule,
         MatPaginatorModule,
+        MatSortModule,
         MatIconModule,
         MatRadioModule
     ],

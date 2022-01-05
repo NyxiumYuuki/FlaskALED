@@ -1,19 +1,25 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {Person} from "../../../interfaces/Person";
-import {CheckEmailService} from "../../../services/checkEmail/check-email.service";
-import {HashageService} from "../../../services/hashage/hashage.service";
+import {CheckEmailService} from "../../../common/services/checkEmail/check-email.service";
+import {HashageService} from "../../../common/services/hashage/hashage.service";
 
 
 
 @Component({
-  selector: 'app-popup-update-profil',
-  templateUrl: './popup-update-profil.component.html',
-  styleUrls: ['./popup-update-profil.component.scss']
+  selector: 'app-popup-update-person-admin',
+  templateUrl: './popup-update-person-admin.component.html',
+  styleUrls: ['./popup-update-person-admin.component.scss']
 })
-export class PopupUpdateProfilComponent implements OnInit
+export class PopupUpdatePersonAdminComponent implements OnInit
 {
-    personCopy: Person;
+    personCopy: any = {
+        id: "",
+        nickname: "",
+        email: "",
+        hash_pass: "",
+        is_admin: true,
+        role: "utilisateur"
+    };
     newPassword: string = "";
     confirmNewPassword: string = "" ;
     changePassword: boolean = false ;
@@ -21,7 +27,7 @@ export class PopupUpdateProfilComponent implements OnInit
     errorMessage: string = "" ;
 
 
-    constructor( public dialogRef: MatDialogRef<PopupUpdateProfilComponent>,
+    constructor( public dialogRef: MatDialogRef<PopupUpdatePersonAdminComponent>,
                  @Inject(MAT_DIALOG_DATA) public data: any,
                  private checkEmailService: CheckEmailService,
                  private hashageService: HashageService ) { }
@@ -32,21 +38,27 @@ export class PopupUpdateProfilComponent implements OnInit
         const person = this.data.person;
         this.personCopy = {
             id: person.id,
-            login: person.login,
+            nickname: person.nickname,
             email: person.email,
-            hashPass: person.hashPass,
-            role: person.role
+            hash_pass: person.hash_pass,
+            is_admin: person.is_admin,
+            role: person.role,
         };
+        console.log("ngOnInit")
+        console.log(this.personCopy);
     }
 
 
     // Appuie sur le bouton "valider"
     onValider(): void
     {
+        console.log("onValider")
+        console.log(this.personCopy);
+
         this.checkField();
         if(!this.hasError)
         {
-            if(this.changePassword) this.personCopy.hashPass = this.hashageService.run(this.newPassword);
+            if(this.changePassword) this.personCopy.hash_pass = this.hashageService.run(this.newPassword);
             const data = { user: this.personCopy };
 
             // ...
@@ -75,7 +87,7 @@ export class PopupUpdateProfilComponent implements OnInit
     // Check les champs saisis par l'utilisateur
     checkField(): void
     {
-        if(this.personCopy.login.length === 0) {
+        if(this.personCopy.nickname.length === 0) {
             this.errorMessage = "Veuillez remplir le champ 'pseudo'" ;
             this.hasError = true;
         }

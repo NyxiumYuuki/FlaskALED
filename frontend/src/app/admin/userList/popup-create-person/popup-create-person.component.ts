@@ -2,7 +2,6 @@ import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {CheckEmailService} from "../../../common/services/checkEmail/check-email.service";
 import {HashageService} from "../../../common/services/hashage/hashage.service";
-import {Person} from "../../../common/interfaces/Person";
 
 
 
@@ -13,12 +12,12 @@ import {Person} from "../../../common/interfaces/Person";
 })
 export class PopupCreatePersonComponent
 {
-    person: Person = {
+    person = {
         id: "",
-        login: "",
+        nickname: "",
         email: "",
-        hashPass: "",
-        role: "user"
+        hash_pass: "",
+        is_admin: false,
     };
     password: string = "";
     confirmPassword: string = "" ;
@@ -39,7 +38,7 @@ export class PopupCreatePersonComponent
         this.checkField();
         if(!this.hasError)
         {
-            if(this.changePassword) this.person.hashPass = this.hashageService.run(this.password);
+            if(this.changePassword) this.person.hash_pass = this.hashageService.run(this.password);
             const data = { user: this.person };
 
             // ...
@@ -67,7 +66,7 @@ export class PopupCreatePersonComponent
     // Check les champs saisis par l'utilisateur
     checkField(): void
     {
-        if(this.person.login.length === 0) {
+        if(this.person.nickname.length === 0) {
             this.errorMessage = "Veuillez remplir le champ 'pseudo'.";
             this.hasError = true;
         }

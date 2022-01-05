@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PopupDeletePersonComponent } from './popup-delete-person.component';
+import { PageRegistryComponent } from './page-registry.component';
 
-describe('PopupDeletePersonComponent', () => {
-  let component: PopupDeletePersonComponent;
-  let fixture: ComponentFixture<PopupDeletePersonComponent>;
+describe('RegistryComponent', () => {
+  let component: PageRegistryComponent;
+  let fixture: ComponentFixture<PageRegistryComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PopupDeletePersonComponent ]
+      declarations: [ PageRegistryComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PopupDeletePersonComponent);
+    fixture = TestBed.createComponent(PageRegistryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

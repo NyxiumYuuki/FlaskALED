@@ -1,14 +1,13 @@
 import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
-import {Person} from "../../../common/interfaces/Person";
 import {FictitiousDatasService} from "../../../common/services/fictitiousDatas/fictitious-datas.service";
 import {MatSort} from "@angular/material/sort";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatDialog} from "@angular/material/dialog";
 import {PopupCreatePersonComponent} from "../popup-create-person/popup-create-person.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {PopupUpdateProfilComponent} from "../../../common/components/profil/popup-update-profil/popup-update-profil.component";
-import {PopupDeletePersonComponent} from "../popup-delete-person/popup-delete-person.component";
+import {PopupUpdatePersonAdminComponent} from "../popup-update-person-admin/popup-update-person-admin.component";
+import {PopupDeleteProfilComponent} from "../../../common/components/popup-delete-profil/popup-delete-profil.component";
 
 
 
@@ -19,12 +18,11 @@ import {PopupDeletePersonComponent} from "../popup-delete-person/popup-delete-pe
 })
 export class PageUserListComponent implements AfterViewInit
 {
-    displayedColumns: string[] = [ "login", "email", "role", "actions" ];
-    dataSource: MatTableDataSource<Person>;
+    displayedColumns: string[] = [ "nickname", "email", "role", "actions" ];
+    dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
     @ViewChild(MatSort) sort: MatSort;
     @ViewChild(MatPaginator) paginator: MatPaginator;
     configSnackBar = { duration: 2000, panelClass: "custom-class" };
-
 
 
     constructor( private fictitiousDatasService: FictitiousDatasService,
@@ -32,19 +30,27 @@ export class PageUserListComponent implements AfterViewInit
                  private snackBar: MatSnackBar) { }
 
 
-
     ngAfterViewInit(): void
     {
         // Faux code
-        const tabPerson = this.fictitiousDatasService.getTabPerson(5);
+        let tabPerson = this.fictitiousDatasService.getTabPerson(5);
 
         // Vrai code ...
-
+        tabPerson = tabPerson.map( person => {
+            if(!person.is_admin) return Object.assign(person, {role: "utilisateur"});
+            else return Object.assign(person, {role: "admin"});
+        });
         this.dataSource = new MatTableDataSource(tabPerson);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
     }
 
+
+    applyFilter(event: Event)
+    {
+        const filterValue = (event.target as HTMLInputElement).value;
+        this.dataSource.filter = filterValue.trim().toLowerCase();
+    }
 
 
     // Appuie sur le bouton "add"
@@ -62,24 +68,22 @@ export class PageUserListComponent implements AfterViewInit
                 else {
                     this.dataSource.data.push(person);
                     this.dataSource.data = this.dataSource.data;
-                    this.dataSource = this.dataSource
+                    this.dataSource = this.dataSource;
                     this.snackBar.open( "L'utilisateur a bien été créé ✔", "", this.configSnackBar);
                 }
-
             });
     }
 
 
-
     // Appuie sur le bouton "edit"
-    onUpdate(personToUpdate: Person): void
+    onUpdate(personToUpdate: any): void
     {
         const config = {
             width: '50%',
             data: { person: personToUpdate }
         };
         this.dialog
-            .open(PopupUpdateProfilComponent, config)
+            .open(PopupUpdatePersonAdminComponent, config)
             .afterClosed()
             .subscribe( personUpdated => {
 
@@ -98,15 +102,18 @@ export class PageUserListComponent implements AfterViewInit
     }
 
 
-
     // Appuie sur le bouton "delete"
-    onDelete(personToDelete: Person): void
+    onDelete(personToDelete: any): void
     {
         const config = {
-            data: { person: personToDelete }
+            data: {
+                id: personToDelete.id,
+                email: personToDelete.email,
+                me: false,
+            }
         };
         this.dialog
-            .open(PopupDeletePersonComponent, config)
+            .open(PopupDeleteProfilComponent, config)
             .afterClosed()
             .subscribe( personUpdated => {
 
