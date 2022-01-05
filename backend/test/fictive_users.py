@@ -1,48 +1,41 @@
+import sys
+sys.path.append( "../application" )
+import users_model
+import logs_model 
+
 from users_model import Users
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    email = db.Column(db.String(), nullable=False, unique=True)
-    hash_pass = db.Column(db.LargeBinary(), nullable=False)
-    salt = db.Column(db.LargeBinary(), nullable=False)
-    is_admin = db.Column(db.Boolean, default=False, nullable=False)
+
     
 
 
 TAB_USER = [
     {
-         "id": 1,
          "email": "riri@gmail.com",
-         "login": "riri",
          "hash_pass": "ririPass",
-         "isAdmin": False       
+         "salt": "b'\x98\x95]\xa2B\xe5\x84gN\n1\x11\x1c%\xf7S\x8b\x88\xf7\xaa\x83\xf8$\xa8\xd5A\xd1\xa0\xf7:j\x10'",
+         "is_admin": False       
     },
     {
         "id": 2,
         "email": "fifi@gmail.com",
-        "login": "fifi",
-        "hashPass": "fifiPass",
-        "isAdmin": False  
+        "hash_pass": "fifiPass",
+        "salt": "b'\xa9X9{\xc3\x8c\xe0\xeb\x0b\x01\xd0.o\t\xc0bv\xac\xe2n\x878\xf7\xba\x16\xd6\xee\x94\xc8U\xf0\x15'",
+        "is_admin": False  
     },
     {
         "id": 3,
-        "email": "loulou@gmail.com",
-        "login": "loulou",
-        "hashPass": "loulouPass",
-        "isAdmin": False
+        "email": "donald@gmail.com",
+        "hash_pass": "donaldPass",
+        "salt": "b'\xefM\xe5q\r\xb2\xc5\xff3\x88\x0c\x87\xa3\xe9F\xd7:\xc1\xc2J\xabvVR&\xe1-|D\xf5L '"
+        "is_admin": False
     }, 
     {
         "id": 4,
-        "email": "picsou@gmail.com",
-        "login": "picsou",
-        "hashPass": "picsouPass",
-        "isAdmin": True
-    }, 
-    {
-        "id": 5,
-        "email": "donald@gmail.com",
-        "login": "donald",
-        "hashPass": "donaldPass",
-        "isAdmin": True
+        "email": "daisy@gmail.com",
+        "hash_pass": "daisyPass",
+        "salt": "b'\x01\xefCC\x05\x1f\x85\xd8\xf0\x02\xd1\x1c\xcb\xab\xec\x87M\x03\xe5T\x05]\x11\xc45<}\xd3\xfbFA\xbb'"
+        "is_admin": True
     }, 
 ]
 
