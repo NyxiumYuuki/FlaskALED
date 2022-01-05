@@ -1,7 +1,7 @@
 from flask import current_app as app
 from flask import request
 from .responses import send_message, send_error
-from .api_functions import db_login, db_register, db_user_update, db_create_log
+from .api_functions import db_login, db_register, db_user_update, db_create_log, db_user_delete
 from .sessionJWT import create_auth_token, check_auth_token
 
 
@@ -12,19 +12,21 @@ def login():
     post_email = str(post_json['email'])
     post_password = str(post_json['password'])
     if post_email and post_password:
-        ip = request.remote_addr
-        res = db_login(ip, post_email, post_password)
-        # TODO: Token Authentication
-        if res['status'] == 0:
-            user = res['data']
-            token = create_auth_token(user)
-            return send_message(res['message'], user, token)
-        elif res['status'] == 1:
-            user = None
-            token = create_auth_token(user)
-            return send_error(404, res['message'], token)
+        if post_email != '' and post_password != '':
+            ip = request.remote_addr
+            res = db_login(ip, post_email, post_password)
+            if res['status'] == 0:
+                user = res['data']
+                token = create_auth_token(user)
+                return send_message(res['message'], user, token)
+            elif res['status'] == 1:
+                user = None
+                token = create_auth_token(user)
+                return send_error(404, res['message'], token)
+        else:
+            return send_error(400, 'Error : Empty email and/or password fields.')
     else:
-        return send_error(400, 'POST Request Error : Need email, password fields.')
+        return send_error(400, 'Error : Need email, password fields.')
 
 
 # Register
@@ -35,15 +37,17 @@ def register():
         post_email = str(post_json['email'])
         post_nickname = str(post_json['nickname'])
         post_password = str(post_json['password'])
-        post_is_admin = bool(post_json['is_admin'])
 
-        if post_email and post_nickname and post_password and post_is_admin:
-            ip = request.remote_addr
-            res = db_register(ip, post_email, post_nickname, post_password, post_is_admin)
-            if res['status'] == 1:
-                return send_error(500, res['message'])
-            elif res['status'] == 0:
-                return send_message(res['message'], res['data'])
+        if post_email and post_nickname and post_password:
+            if post_email != '' and post_password != '' and post_nickname != '':
+                ip = request.remote_addr
+                res = db_register(ip, post_email, post_nickname, post_password)
+                if res['status'] == 1:
+                    return send_error(500, res['message'])
+                elif res['status'] == 0:
+                    return send_message(res['message'], res['data'])
+            else:
+                return send_error(400, 'Error : Empty email and/or password and/or nickname fields.')
     except KeyError as e:
         return send_error(400, 'POST Request Error : Need '+str(e)+' field.')
 
@@ -89,13 +93,16 @@ def user_update():
             fields += ', password'
 
         if post_nickname is not None or post_password is not None:
-            ip = request.remote_addr
-            user_id = token['payload']['id']
-            res = db_user_update(ip, user_id, post_nickname, post_password)
-            if res['status'] == 1:
-                return send_error(500, res['message'])
-            elif res['status'] == 0:
-                return send_message(res['message'], res['data'])
+            if post_nickname != '' and post_password != '':
+                ip = request.remote_addr
+                user_id = token['payload']['id']
+                res = db_user_update(ip, user_id, post_nickname, post_password)
+                if res['status'] == 1:
+                    return send_error(500, res['message'])
+                elif res['status'] == 0:
+                    return send_message(res['message'], res['data'])
+            else:
+                return send_error(400, 'Error : Empty nickname and/or password fields.')
         else:
             return send_error(400, 'POST Request Error : Need ' + fields + ' field.')
     else:
@@ -105,7 +112,26 @@ def user_update():
 # Delete User
 @app.route('/api/user/delete', methods=['DELETE'])
 def user_delete():
-    return send_message('User.delete not implemented', None)
+    token = check_auth_token(request)
+    if token['success']:
+        ip = request.remote_addr
+        user_id = token['payload']['id']
+        res = db_user_delete(ip, user_id)
+        if res['status'] == 1:
+            return send_error(500, res['message'])
+        elif res['status'] == 0:
+            db_create_log(
+                ip=ip,
+                action='logout',
+                message='User disconnected.',
+                has_succeeded=True,
+                status_code=0,
+                table='users',
+                id_user=token['payload']['id']
+            )
+            return send_message(res['message'], None, token_delete=True)
+    else:
+        return send_error(500, token['message'])
 
 
 # Admin : Create User

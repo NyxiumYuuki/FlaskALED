@@ -58,7 +58,7 @@ def db_login(ip, email, password):
         return {'status': 1, 'message': message}  # Email or password invalid
 
 
-def db_register(ip, email, nickname, password, is_admin):
+def db_register(ip, email, nickname, password, is_admin=False):
     user = Users.query.filter(
         Users.email == email
     ).first()
@@ -167,6 +167,35 @@ def db_user_update(ip, user_id, nickname, password):
         db_create_log(
             ip=ip,
             action='user_update',
+            message=message,
+            has_succeeded=False,
+            status_code=1,
+            table='users',
+            id_user=user_id
+        )
+        return {'status': 1, 'message': message}
+
+
+def db_user_delete(ip, user_id):
+    test = Users.query.filter(Users.id == user_id).delete()
+    if test == 1:
+        db.session.commit()
+        message = 'User deleted.'
+        db_create_log(
+            ip=ip,
+            action='user_delete',
+            message=message,
+            has_succeeded=True,
+            status_code=0,
+            table='users',
+            id_user=user_id
+        )
+        return {'status': 0, 'message': message, 'data': None}
+    else:
+        message = 'User do not exist.'
+        db_create_log(
+            ip=ip,
+            action='user_delete',
             message=message,
             has_succeeded=False,
             status_code=1,
