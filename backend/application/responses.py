@@ -8,7 +8,7 @@ def send_error(status_code, message):
         'message': message
     }
     res = app.response_class(
-        response=json.dumps(data_json, sort_keys=True),
+        response=json.dumps(data_json),
         status=status_code,
         mimetype='application/json'
     )
@@ -23,7 +23,7 @@ def send_message(message, data):
         'data': data
     }
     res = app.response_class(
-        response=json.dumps(data_json, sort_keys=True),
+        response=json.dumps(data_json),
         status=200,
         mimetype='application/json'
     )

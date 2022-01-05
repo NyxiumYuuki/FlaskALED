@@ -15,7 +15,7 @@ def db_login(ip, email, password):
         Users.email == email
     ).first()
     if not user:
-        message = f'{email} does not exist.'
+        message = f'Email or password invalid'
         log = Logs(
             date=datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
             id_user=None,
@@ -70,12 +70,12 @@ def db_login(ip, email, password):
         return {'status': 0, 'message': message, 'data': user.json()}
 
 
-def db_register(ip, email, login, password, is_admin):
+def db_register(ip, email, password, is_admin):
     user = Users.query.filter(
         Users.email == email
     ).first()
     if user:
-        message = f'{email} ({login}) already exist.'
+        message = f'{email} already exist.'
         log = Logs(
             date=datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
             id_user=None,
@@ -97,7 +97,6 @@ def db_register(ip, email, login, password, is_admin):
 
     user = Users(
         email=email,
-        login=login,
         hash_pass=hash_pass,
         salt=salt,
         is_admin=is_admin

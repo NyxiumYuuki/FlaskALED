@@ -1,3 +1,7 @@
+from datetime import datetime, timedelta
+from flask import current_app as app
+import jwt
+
 from . import db
 
 
@@ -37,3 +41,32 @@ class Users(db.Model):
 
     def get_salt(self):
         return self.salt
+
+    def auth_token(self):
+        try:
+            time = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+            payload = {
+                'exp': time + timedelta(days=0, seconds=5),
+                'iat': time,
+                'user': self.json()
+            }
+            return jwt.encode(
+                payload,
+                app.config.get('SECRET_KEY'),
+                algorithm='HS256'
+            )
+        except Exception as e:
+            return e
+
+    @staticmethod
+    def decode_auth_token(auth_token):
+        try:
+            payload = jwt.decode(
+                auth_token,
+                app.config.get('SECRET_KEY')
+            )
+            return payload['user']
+        except jwt.ExpiredSignatureError:
+            return 'Signature expired . Please log in again.'
+        except jwt.InvalidTokenError:
+            return 'Invalid token. Please log in again.'

@@ -29,19 +29,18 @@ def login():
 def register():
     post_json = request.json
     post_email = str(post_json['email'])
-    post_login = str(post_json['login'])
     post_password = str(post_json['password'])
     post_is_admin = bool(post_json['is_admin'])
 
-    if post_email and post_login and post_password and post_is_admin:
+    if post_email and post_password and post_is_admin:
         ip = request.remote_addr
-        res = db_register(ip, post_email, post_login, post_password, post_is_admin)
+        res = db_register(ip, post_email, post_password, post_is_admin)
         if res['status'] == 1:
             return send_error(500, res['message'])
         elif res['status'] == 0:
             return send_message(res['message'], res['data'])
     else:
-        return send_error(400, 'POST Request Error : Need email, login, password and is_admin fields.')
+        return send_error(400, 'POST Request Error : Need email, password and is_admin fields.')
 
 
 # Logout

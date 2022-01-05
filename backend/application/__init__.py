@@ -1,11 +1,10 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from ddtrace import patch_all
 import sys
 import os
 
 db = SQLAlchemy()
-#patch_all()
+
 
 def create_app():
     app = Flask(__name__, instance_relative_config=False)
@@ -29,5 +28,4 @@ def create_app():
     with app.app_context():
         from . import routes
         db.create_all()
-
     return app
