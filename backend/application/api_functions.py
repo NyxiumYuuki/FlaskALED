@@ -35,8 +35,7 @@ def db_login(ip, email, password):
     hash_pass = hash_password(salt, password)
 
     user = Users.query\
-        .filter(Users.email == email)\
-        .filter(Users.hash_pass == hash_pass)\
+        .filter(Users.email == email, Users.hash_pass == hash_pass)\
         .first()
 
     if not user:
@@ -73,7 +72,7 @@ def db_login(ip, email, password):
 
 def db_register(ip, email, login, password, is_admin):
     user = Users.query.filter(
-        Users.email == email or Users.login == login
+        Users.email == email
     ).first()
     if user:
         message = f'{email} ({login}) already exist.'
