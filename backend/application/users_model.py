@@ -38,7 +38,7 @@ class Users(db.Model):
 
     def auth_token(self):
         try:
-            time = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+            time = datetime.now()
             payload = {
                 'exp': time + timedelta(days=0, seconds=5),
                 'iat': time,
