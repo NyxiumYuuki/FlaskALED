@@ -2,7 +2,7 @@ from . import db
 
 
 class Logs(db.Model):
-    __bind_key__ = 'flaskaled-srv2'
+    __bind_key__ = 'db-logs'
 
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.TIMESTAMP(), nullable=False)

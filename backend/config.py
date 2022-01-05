@@ -13,11 +13,11 @@ class Config(object):
 
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_DATABASE_URI_1 = os.environ.get('DATABASE_URL_1', None)
-    SQLALCHEMY_DATABASE_URI_2 = os.environ.get('DATABASE_URL_2', None)
+    SQLALCHEMY_DATABASE_URI_1 = os.environ.get('DATABASE_URL_USERS', None)
+    SQLALCHEMY_DATABASE_URI_2 = os.environ.get('DATABASE_URL_LOGS', None)
     SQLALCHEMY_BINDS = {
-        'flaskaled-srv1': SQLALCHEMY_DATABASE_URI_1,
-        'flaskaled-srv2': SQLALCHEMY_DATABASE_URI_2
+        'db-users': SQLALCHEMY_DATABASE_URI_1,
+        'db-logs': SQLALCHEMY_DATABASE_URI_2
     }
 
     SECRET_KEY = os.environ.get('SECRET_KEY', 'default_secret_key')
@@ -26,12 +26,18 @@ class Config(object):
 
 class ProductionConfig(Config):
     DEBUG = False
+    SQLALCHEMY_ECHO = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class StagingConfig(Config):
     STAGING = True
+    SQLALCHEMY_ECHO = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class DevelopmentConfig(Config):
     DEVELOPMENT = True
     DEBUG = True
+    SQLALCHEMY_ECHO = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = True

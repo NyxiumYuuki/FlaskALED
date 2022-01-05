@@ -17,10 +17,12 @@ def login():
         # TODO: Token Authentication
         if res['status'] == 0:
             user = res['data']
-            token = create_auth_token(res['data'])
+            token = create_auth_token(user)
             return send_message(res['message'], user, token)
         elif res['status'] == 1:
-            return send_error(404, res['message'])
+            user = None
+            token = create_auth_token(user)
+            return send_error(404, res['message'], token)
     else:
         return send_error(400, 'POST Request Error : Need email, password fields.')
 
@@ -47,12 +49,11 @@ def register():
 # Logout
 @app.route('/api/logout', methods=['DELETE'])
 def logout():
-    token = check_auth_token(request, 'X-Access-Token')
+    token = check_auth_token(request)
     if token['success']:
         return send_message('User disconnected.', None)
     else:
         return send_error(500, token['message'])
-
 
 
 # Update User
