@@ -18,7 +18,7 @@ def send_error(status_code, message, token=None):
     return res
 
 
-def send_message(message, data, token=None):
+def send_message(message, data, token=None, token_delete=False):
     data_json = {
         'status': 'success',
         'message': message,
@@ -32,4 +32,6 @@ def send_message(message, data, token=None):
     res.headers['Access-Control-Allow-Origin'] = app.config.get('ALLOW_ORIGIN')
     if token is not None:
         res.set_cookie('SESSIONID', token)
+    if token_delete:
+        res.delete_cookie('SESSIONID')
     return res

@@ -2,7 +2,7 @@ from flask import current_app as app
 from flask import request
 from .responses import send_message, send_error
 from .api_functions import db_login, db_register
-from .sessionJWT import create_auth_token, decode_auth_token, check_auth_token
+from .sessionJWT import create_auth_token, check_auth_token
 
 
 # Login
@@ -31,19 +31,21 @@ def login():
 @app.route('/api/register', methods=['POST'])
 def register():
     post_json = request.json
-    post_email = str(post_json['email'])
-    post_password = str(post_json['password'])
-    post_is_admin = bool(post_json['is_admin'])
+    try:
+        post_email = str(post_json['email'])
+        post_nickname = str(post_json['nickname'])
+        post_password = str(post_json['password'])
+        post_is_admin = bool(post_json['is_admin'])
 
-    if post_email and post_password and post_is_admin:
-        ip = request.remote_addr
-        res = db_register(ip, post_email, post_password, post_is_admin)
-        if res['status'] == 1:
-            return send_error(500, res['message'])
-        elif res['status'] == 0:
-            return send_message(res['message'], res['data'])
-    else:
-        return send_error(400, 'POST Request Error : Need email, password and is_admin fields.')
+        if post_email and post_nickname and post_password and post_is_admin:
+            ip = request.remote_addr
+            res = db_register(ip, post_email, post_nickname, post_password, post_is_admin)
+            if res['status'] == 1:
+                return send_error(500, res['message'])
+            elif res['status'] == 0:
+                return send_message(res['message'], res['data'])
+    except KeyError as e:
+        return send_error(400, 'POST Request Error : Need '+str(e)+' field.')
 
 
 # Logout
@@ -51,7 +53,7 @@ def register():
 def logout():
     token = check_auth_token(request)
     if token['success']:
-        return send_message('User disconnected.', None)
+        return send_message('User disconnected.', None, token_delete=True)
     else:
         return send_error(500, token['message'])
 
@@ -59,6 +61,7 @@ def logout():
 # Update User
 @app.route('/api/user/update', methods=['PUT'])
 def user_update():
+    token = check_auth_token(request)
     return send_message('User.update not implemented', None)
 
 

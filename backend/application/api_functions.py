@@ -48,7 +48,7 @@ def db_login(ip, email, password):
         return {'status': 1, 'message': message}  # Email or password invalid
 
 
-def db_register(ip, email, password, is_admin):
+def db_register(ip, email, nickname, password, is_admin):
     user = Users.query.filter(
         Users.email == email
     ).first()
@@ -75,6 +75,7 @@ def db_register(ip, email, password, is_admin):
     user = Users(
         email=email,
         hash_pass=hash_pass,
+        nickname=nickname,
         salt=salt,
         is_admin=is_admin
     )

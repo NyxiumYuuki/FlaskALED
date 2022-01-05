@@ -24,13 +24,14 @@ def decode_auth_token(auth_token):
     try:
         payload = jwt.decode(
             auth_token,
-            app.config.get('SECRET_KEY')
+            app.config.get('SECRET_KEY'),
+            algorithms='HS256'
         )
         return {'success': True, 'payload': payload['user']}
     except jwt.ExpiredSignatureError:
         return {'success': False, 'message': 'Signature expired . Please log in again.'}
-    except jwt.InvalidTokenError:
-        return {'success': False, 'message': 'Invalid token. Please log in again.'}
+    except jwt.InvalidTokenError as e:
+        return {'success': False, 'message': 'User not authenticated.'}
 
 
 def check_auth_token(request):
