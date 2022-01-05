@@ -1,7 +1,7 @@
 from flask import current_app as app
 from flask import request
 from .responses import send_message, send_error
-from .api_functions import db_login, db_register
+from .api_functions import db_login, db_register, db_user_update, db_create_log
 from .sessionJWT import create_auth_token, check_auth_token
 
 
@@ -53,16 +53,53 @@ def register():
 def logout():
     token = check_auth_token(request)
     if token['success']:
-        return send_message('User disconnected.', None, token_delete=True)
+        ip = request.remote_addr
+        message = 'User disconnected.'
+        db_create_log(
+            ip=ip,
+            action='logout',
+            message=message,
+            has_succeeded=True,
+            status_code=0,
+            table='users',
+            id_user=token['payload']['id']
+        )
+        return send_message(message, None, token_delete=True)
     else:
         return send_error(500, token['message'])
 
 
-# Update User
+# Update User (Nickname, Password)
 @app.route('/api/user/update', methods=['PUT'])
 def user_update():
     token = check_auth_token(request)
-    return send_message('User.update not implemented', None)
+    if token['success']:
+        post_json = request.json
+        post_nickname = None
+        post_password = None
+        fields = ''
+        if 'nickname' in post_json:
+            post_nickname = str(post_json['nickname'])
+        else:
+            fields += 'nickname'
+
+        if 'password' in post_json:
+            post_password = str(post_json['password'])
+        else:
+            fields += ', password'
+
+        if post_nickname is not None or post_password is not None:
+            ip = request.remote_addr
+            user_id = token['payload']['id']
+            res = db_user_update(ip, user_id, post_nickname, post_password)
+            if res['status'] == 1:
+                return send_error(500, res['message'])
+            elif res['status'] == 0:
+                return send_message(res['message'], res['data'])
+        else:
+            return send_error(400, 'POST Request Error : Need ' + fields + ' field.')
+    else:
+        return send_error(500, token['message'])
 
 
 # Delete User
