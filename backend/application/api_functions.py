@@ -325,7 +325,7 @@ def db_users(ip, user_id, query, by='email,nickname', id=None, is_admin=None, or
 
     users = users.all()
 
-    message = f'id({id}), is_admin({is_admin}) and order_by({order_by}): {len(users)} result(s)'
+    message = f'query({query}), by({by}), id({id}), is_admin({is_admin}) and order_by({order_by}): {len(users)} result(s)'
     db_create_log(
         ip=ip,
         action='users',
