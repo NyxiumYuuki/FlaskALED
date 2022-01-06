@@ -1,7 +1,7 @@
 from flask import current_app as app
 from flask import request
 from .responses import send_message, send_error
-from .api_functions import db_login, db_register, db_user_update, db_create_log, db_user_delete
+from .api_functions import db_login, db_register, db_user_update, db_create_log, db_user_delete, db_admin_update_user, db_users
 from .sessionJWT import create_auth_token, check_auth_token
 
 
@@ -24,9 +24,9 @@ def login():
                 token = create_auth_token(user)
                 return send_error(404, res['message'], token)
         else:
-            return send_error(400, 'Error : Empty email and/or password fields.')
+            return send_error(400, 'Empty email and/or password fields.')
     else:
-        return send_error(400, 'Error : Need email, password fields.')
+        return send_error(400, 'Need email, password fields.')
 
 
 # Register
@@ -47,9 +47,9 @@ def register():
                 elif res['status'] == 0:
                     return send_message(res['message'], res['data'])
             else:
-                return send_error(400, 'Error : Empty email and/or password and/or nickname fields.')
+                return send_error(400, 'Empty email and/or password and/or nickname fields.')
     except KeyError as e:
-        return send_error(400, 'POST Request Error : Need '+str(e)+' field.')
+        return send_error(400, 'Need '+str(e)+'field.')
 
 
 # Logout
@@ -85,12 +85,12 @@ def user_update():
         if 'nickname' in post_json:
             post_nickname = str(post_json['nickname'])
         else:
-            fields += 'nickname'
+            fields += 'nickname '
 
         if 'password' in post_json:
             post_password = str(post_json['password'])
         else:
-            fields += ', password'
+            fields += 'password '
 
         if post_nickname is not None or post_password is not None:
             if post_nickname != '' and post_password != '':
@@ -102,9 +102,9 @@ def user_update():
                 elif res['status'] == 0:
                     return send_message(res['message'], res['data'])
             else:
-                return send_error(400, 'Error : Empty nickname and/or password fields.')
+                return send_error(400, 'Empty nickname and/or password fields.')
         else:
-            return send_error(400, 'POST Request Error : Need ' + fields + ' field.')
+            return send_error(400, 'Need ' + fields + 'field.')
     else:
         return send_error(500, token['message'])
 
@@ -135,30 +135,206 @@ def user_delete():
 
 
 # Admin : Create User
-@app.route('/api/admin/create/user/', methods=['POST'])
-def user_create():
-    return send_message('Admin.create.user not implemented', None)
+@app.route('/api/admin/create/user', methods=['POST'])
+def admin_create_user():
+    token = check_auth_token(request)
+    if token['success']:
+        ip = request.remote_addr
+        user_id = token['payload']['id']
+        is_admin = token['payload']['is_admin']
+        if is_admin:
+            post_json = request.json
+            post_email = None
+            post_nickname = None
+            post_password = None
+            post_is_admin = None
+            fields = ''
+            if 'email' in post_json:
+                post_email = str(post_json['email'])
+            else:
+                fields += 'email '
+
+            if 'nickname' in post_json:
+                post_nickname = str(post_json['nickname'])
+            else:
+                fields += 'nickname '
+
+            if 'password' in post_json:
+                post_password = str(post_json['password'])
+            else:
+                fields += 'password '
+
+            if 'is_admin' in post_json:
+                post_is_admin = bool(post_json['is_admin'])
+            else:
+                fields += 'is_admin '
+
+            if post_email is not None or post_nickname is not None or post_password is not None or post_is_admin is not None:
+                if post_email != '' and post_nickname != '' and post_password != '' and str(post_is_admin) != '':
+                    res = db_register(ip, post_email, post_nickname, post_password, is_admin=post_is_admin)
+                    if res['status'] == 1:
+                        db_create_log(
+                            ip=ip,
+                            action='admin/create/user',
+                            message=res['message'],
+                            has_succeeded=False,
+                            status_code=res['status'],
+                            table='users',
+                            id_user=user_id
+                        )
+                        return send_error(500, res['message'])
+                    elif res['status'] == 0:
+                        db_create_log(
+                            ip=ip,
+                            action='admin/create/user',
+                            message=res['message'],
+                            has_succeeded=True,
+                            status_code=res['status'],
+                            table='users',
+                            id_user=user_id
+                        )
+                        return send_message(res['message'], res['data'])
+                else:
+                    return send_error(400, 'Empty email and/or nickname and/or password and/or is_admin fields.')
+            else:
+                return send_error(400, 'Need ' + fields + 'field.')
+        else:
+            return send_error(500, 'User does not have permission.')
+    else:
+        return send_error(500, token['message'])
 
 
-# Admin : Change User password
-@app.route('/api/admin/update/user/password', methods=['PUT'])
-def admin_update_user_pwd():
-    return send_message('Admin.update.user.password not implemented', None)
+# Admin : Change User password and/or role
+@app.route('/api/admin/update/user', methods=['PUT'])
+def admin_update_user():
+    token = check_auth_token(request)
+    if token['success']:
+        user_id = token['payload']['id']
+        is_admin = token['payload']['is_admin']
+        if is_admin:
+            post_json = request.json
+            post_is_admin = None
+            post_password = None
+            post_user_id_delete = None
+            fields = ''
+            if 'id' in post_json:
+                post_user_id_delete = int(post_json['id'])
+            else:
+                fields += 'id '
 
+            if 'is_admin' in post_json:
+                post_is_admin = bool(post_json['is_admin'])
+            else:
+                fields += 'is_admin '
 
-# Admin : Change User role
-@app.route('/api/admin/update/user/role', methods=['PUT'])
-def admin_update_user_role():
-    return send_message('Admin.update.user.role not implemented', None)
+            if 'password' in post_json:
+                post_password = str(post_json['password'])
+            else:
+                fields += 'password '
+
+            if post_user_id_delete is not None and (post_is_admin is not None or post_password is not None):
+                if str(post_is_admin) != '' and post_password != '' and str(post_user_id_delete) != '':
+                    ip = request.remote_addr
+                    res = db_admin_update_user(ip, post_user_id_delete, post_is_admin, post_password)
+                    if res['status'] == 1:
+                        db_create_log(
+                            ip=ip,
+                            action='admin/update/user',
+                            message=res['message'],
+                            has_succeeded=False,
+                            status_code=res['status'],
+                            table='users',
+                            id_user=user_id
+                        )
+                        return send_error(500, res['message'])
+                    elif res['status'] == 0:
+                        db_create_log(
+                            ip=ip,
+                            action='admin/update/user',
+                            message=res['message'],
+                            has_succeeded=True,
+                            status_code=res['status'],
+                            table='users',
+                            id_user=user_id
+                        )
+                        return send_message(res['message'], res['data'])
+                else:
+                    return send_error(400, 'Empty is_admin and/or password fields.')
+            else:
+                return send_error(400, 'Need ' + fields + 'field.')
+        else:
+            return send_error(500, 'User does not have permission.')
+    else:
+        return send_error(500, token['message'])
 
 
 # Admin : Delete User
 @app.route('/api/admin/delete/user', methods=['DELETE'])
 def admin_delete_user():
-    return send_message('Admin.delete.user not implemented', None)
+    token = check_auth_token(request)
+    if token['success']:
+        ip = request.remote_addr
+        user_id = token['payload']['id']
+        is_admin = token['payload']['is_admin']
+        if is_admin:
+            post_json = request.json
+            post_user_id_delete = None
+            fields = ''
+            if 'id' in post_json:
+                post_user_id_delete = int(post_json['id'])
+            else:
+                fields += 'id'
+            if post_user_id_delete is not None:
+                if str(post_user_id_delete) != '':
+                    res = db_user_delete(ip, post_user_id_delete)
+                    if res['status'] == 1:
+                        db_create_log(
+                            ip=ip,
+                            action='admin/delete/user',
+                            message=res['message'],
+                            has_succeeded=False,
+                            status_code=res['status'],
+                            table='users',
+                            id_user=user_id
+                        )
+                        return send_error(500, res['message'])
+                    elif res['status'] == 0:
+                        db_create_log(
+                            ip=ip,
+                            action='admin/delete/user',
+                            message=res['message'],
+                            has_succeeded=True,
+                            status_code=res['status'],
+                            table='users',
+                            id_user=user_id
+                        )
+                        return send_message(res['message'], None)
+                else:
+                    return send_error(400, 'Empty id field.')
+            else:
+                return send_error(400, 'Need ' + fields + 'field.')
+        else:
+            return send_error(500, 'User does not have permission.')
+    else:
+        return send_error(500, token['message'])
 
 
 # List of User (must be authenticated) & Search
 @app.route('/api/users', methods=['GET'])
 def users():
-    return send_message('Users not implemented', None)
+    token = check_auth_token(request)
+    if token['success']:
+        ip = request.remote_addr
+        user_id = token['payload']['id']
+        get_query = request.args.get('q')
+        get_by = request.args.get('by')
+        get_id = request.args.get('id')
+        get_is_admin = request.args.get('is_admin')
+        get_order_by = request.args.get('get_order_by')
+        res = db_users(ip, user_id, get_query, get_by, get_id, get_is_admin, get_order_by)
+        if res['status'] == 1:
+            return send_error(500, res['message'])
+        else:
+            return send_message(res['message'], None)
+    else:
+        return send_error(500, token['message'])

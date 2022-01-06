@@ -29,7 +29,7 @@ def hash_password(salt, password):
 def db_login(ip, email, password):
     user = Users.query.filter(
         Users.email == email
-    ).first()
+    ).scalar()
 
     # Check User and Hash Pass
     if user and user.hash_pass == hash_password(user.salt, password):
@@ -61,7 +61,7 @@ def db_login(ip, email, password):
 def db_register(ip, email, nickname, password, is_admin=False):
     user = Users.query.filter(
         Users.email == email
-    ).first()
+    ).scalar()
     if user:
         message = f'{email} already exist.'
         db_create_log(
@@ -121,7 +121,7 @@ def db_register(ip, email, nickname, password, is_admin=False):
 def db_user_update(ip, user_id, nickname, password):
     user = Users.query.filter(
         Users.id == user_id
-    ).first()
+    ).scalar()
     if user:
         has_succeeded = False
         status_code = 2
@@ -176,7 +176,20 @@ def db_user_update(ip, user_id, nickname, password):
         return {'status': 1, 'message': message}
 
 
-def db_user_delete(ip, user_id):
+def db_user_delete(ip, user_id, is_admin=False):
+    if is_admin and Users.query.filter(Users.is_admin == True).count() <= 1 or user_id == 0:
+        message = 'Can\'t delete last admin'
+        db_create_log(
+            ip=ip,
+            action='user_delete',
+            message=message,
+            has_succeeded=False,
+            status_code=2,
+            table='users',
+            id_user=user_id
+        )
+        return {'status': 2, 'message': message}
+
     test = Users.query.filter(Users.id == user_id).delete()
     if test == 1:
         db.session.commit()
@@ -196,6 +209,228 @@ def db_user_delete(ip, user_id):
         db_create_log(
             ip=ip,
             action='user_delete',
+            message=message,
+            has_succeeded=False,
+            status_code=1,
+            table='users',
+            id_user=user_id
+        )
+        return {'status': 1, 'message': message}
+
+
+def db_admin_update_user(ip, user_id, is_admin, password):
+    user = Users.query.filter(
+        Users.id == user_id
+    ).scalar()
+    if user:
+        has_succeeded = False
+        status_code = 2
+        if is_admin is not None and password:
+            # Salt Hash Pass with SHA256
+            salt = os.urandom(32)
+            hash_pass = hash_password(salt, password)
+            Users.query.filter(Users.id == user_id).update({'is_admin': is_admin, 'hash_pass': hash_pass, 'salt': salt})
+            db.session.commit()
+            message = 'User is_admin and password updated.'
+            has_succeeded = True
+            status_code = 0
+        elif is_admin is not None:
+            Users.query.filter(Users.id == user_id).update({'is_admin': is_admin})
+            db.session.commit()
+            message = 'User is_admin updated.'
+            has_succeeded = True
+            status_code = 0
+        elif password:
+            # Salt Hash Pass with SHA256
+            salt = os.urandom(32)
+            hash_pass = hash_password(salt, password)
+            Users.query.filter(Users.id == user_id).update({'hash_pass': hash_pass, 'salt': salt})
+            db.session.commit()
+            message = 'User password updated.'
+            has_succeeded = True
+            status_code = 0
+        else:
+            message = 'Only is_admin and/or password can be changed.'
+
+        db_create_log(
+            ip=ip,
+            action='user_update',
+            message=message,
+            has_succeeded=has_succeeded,
+            status_code=status_code,
+            table='users',
+            id_user=user_id
+        )
+        return {'status': status_code, 'message': message, 'data': user.json()}
+    else:
+        message = 'User do not exist.'
+        db_create_log(
+            ip=ip,
+            action='user_update',
+            message=message,
+            has_succeeded=False,
+            status_code=1,
+            table='users',
+            id_user=user_id
+        )
+        return {'status': 1, 'message': message}
+
+
+def db_users(ip, user_id, query, by='email,nickname', id=None, is_admin=None, order_by='email'):
+    # q= or id =
+    # if q= then by= (default: email,nickname) or email or nickname
+    # is_admin =
+    # order_by = email, nickname, id, is_admin
+
+    if query is not id:
+        if query:
+            if by == 'email':
+                if is_admin:
+                    if order_by == 'nickname':
+                        users = Users.query.filter().all()
+
+                    elif order_by == 'id':
+                        users = Users.query.filter().all()
+
+                    elif order_by == 'is_admin':
+                        users = Users.query.filter().all()
+
+                    else:
+                        users = Users.query.filter().all()
+
+                else:
+                    if order_by == 'nickname':
+                        users = Users.query.filter().all()
+
+                    elif order_by == 'id':
+                        users = Users.query.filter().all()
+
+                    elif order_by == 'is_admin':
+                        users = Users.query.filter().all()
+
+                    else:
+                        users = Users.query.filter().all()
+
+            elif by == 'nickname':
+                if is_admin:
+                    if order_by == 'nickname':
+                        users = Users.query.filter().all()
+
+                    elif order_by == 'id':
+                        users = Users.query.filter().all()
+
+                    elif order_by == 'is_admin':
+                        users = Users.query.filter().all()
+
+                    else:
+                        users = Users.query.filter().all()
+
+                else:
+                    if order_by == 'nickname':
+                        users = Users.query.filter().all()
+
+                    elif order_by == 'id':
+                        users = Users.query.filter().all()
+
+                    elif order_by == 'is_admin':
+                        users = Users.query.filter().all()
+
+                    else:
+                        users = Users.query.filter().all()
+
+            else:
+                if is_admin:
+                    if order_by == 'nickname':
+                        users = Users.query.filter().all()
+
+                    elif order_by == 'id':
+                        users = Users.query.filter().all()
+
+                    elif order_by == 'is_admin':
+                        users = Users.query.filter().all()
+
+                    else:
+                        users = Users.query.filter().all()
+
+                else:
+                    if order_by == 'nickname':
+                        users = Users.query.filter().all()
+
+                    elif order_by == 'id':
+                        users = Users.query.filter().all()
+
+                    elif order_by == 'is_admin':
+                        users = Users.query.filter().all()
+
+                    else:
+                        users = Users.query.filter().all()
+
+            message = f'query({query}), by({by}), is_admin({is_admin}) and order_by({order_by}): {len(users)} result(s)'
+            db_create_log(
+                ip=ip,
+                action='users',
+                message=message,
+                has_succeeded=True,
+                status_code=0,
+                table='users',
+                id_user=user_id
+            )
+            return {'status': 0, 'message': message, 'data': users.json()}
+        elif id:
+            if is_admin:
+                if order_by == 'nickname':
+                    users = Users.query.filter().all()
+
+                elif order_by == 'id':
+                    users = Users.query.filter().all()
+
+                elif order_by == 'is_admin':
+                    users = Users.query.filter().all()
+
+                else:
+                    users = Users.query.filter().all()
+
+            else:
+                if order_by == 'nickname':
+                    users = Users.query.filter().all()
+
+                elif order_by == 'id':
+                    users = Users.query.filter().all()
+
+                elif order_by == 'is_admin':
+                    users = Users.query.filter().all()
+
+                else:
+                    users = Users.query.filter().all()
+
+            message = f'id({id}), is_admin({is_admin}) and order_by({order_by}): {len(users)} result(s)'
+            db_create_log(
+                ip=ip,
+                action='users',
+                message=message,
+                has_succeeded=True,
+                status_code=0,
+                table='users',
+                id_user=user_id
+            )
+            return {'status': 0, 'message': message, 'data': users.json()}
+        else:
+            message = 'Need q and by field if using query and not id'
+            db_create_log(
+                ip=ip,
+                action='users',
+                message=message,
+                has_succeeded=False,
+                status_code=1,
+                table='users',
+                id_user=user_id
+            )
+            return {'status': 1, 'message': message}
+    else:
+        message = 'Query or id field'
+        db_create_log(
+            ip=ip,
+            action='users',
             message=message,
             has_succeeded=False,
             status_code=1,

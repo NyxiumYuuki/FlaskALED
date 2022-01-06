@@ -11,4 +11,4 @@ CREATE TABLE IF NOT EXISTS logs
     message character varying(512) NOT NULL,
     has_succeeded boolean NOT NULL,
     status_code smallint NOT NULL
-)
+);
