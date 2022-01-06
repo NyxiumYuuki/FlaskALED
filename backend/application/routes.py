@@ -330,7 +330,7 @@ def users():
         get_by = request.args.get('by')
         get_id = request.args.get('id')
         get_is_admin = request.args.get('is_admin')
-        get_order_by = request.args.get('get_order_by')
+        get_order_by = request.args.get('order_by')
         res = db_users(ip, user_id, get_query, get_by, get_id, get_is_admin, get_order_by)
         if res['status'] == 1:
             return send_error(500, res['message'])

@@ -2,7 +2,7 @@ import hashlib
 import os
 from datetime import datetime
 from flask_sqlalchemy import inspect
-from sqlalchemy import asc, or_
+from sqlalchemy import asc, desc, or_
 from .users_model import Users, db
 from .logs_model import Logs
 
@@ -277,11 +277,11 @@ def db_admin_update_user(ip, user_id, is_admin, password):
         return {'status': 1, 'message': message}
 
 
-def db_users(ip, user_id, query, by='email,nickname', id=None, is_admin=None, order_by='email'):
+def db_users(ip, user_id, query, by='email,nickname', id=None, is_admin=None, order_by='email,asc'):
     # q= or id =
     # if q= then by= (default: email,nickname) or email or nickname
     # is_admin =
-    # order_by = (default: email), nickname, id, is_admin
+    # order_by = (default: email,asc), (nickname,asc), (id,desc), (is_admin,desc)
 
     users = Users.query
     if query is id and query is not None:
@@ -314,14 +314,25 @@ def db_users(ip, user_id, query, by='email,nickname', id=None, is_admin=None, or
     if is_admin is not None:
         users = users.filter(Users.is_admin == is_admin)
 
-    if order_by == 'nickname':
-        users = users.order_by(asc(Users.nickname))
-    elif order_by == 'id':
-        users = users.order_by(asc(Users.id))
-    elif order_by == 'is_admin':
-        users = users.order_by(asc(Users.is_admin))
+    order_by = order_by.split(',')
+    if order_by[0] == 'nickname':
+        order = Users.nickname
+    elif order_by[0] == 'id':
+        order = Users.id
+    elif order_by[0] == 'is_admin':
+        order = Users.is_admin
     else:
-        users = users.order_by(asc(Users.email))
+        order = Users.email
+
+    if len(order_by) > 1:
+        if order_by[1] == 'asc':
+            users = users.order_by(asc(order))
+        elif order_by[1] == 'desc':
+            users = users.order_by(desc(order))
+        else:
+            users = users.order_by(asc(order))
+    else:
+        users = users.order_by(asc(order))
 
     users = users.all()
 
