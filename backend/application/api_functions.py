@@ -321,7 +321,7 @@ def db_users(ip, user_id, query, by='email,nickname', id=None, is_admin=None, or
     elif order_by == 'is_admin':
         users = users.order_by(asc(Users.is_admin))
     else:
-        users = users.order_by(asc(Users.is_admin))
+        users = users.order_by(asc(Users.email))
 
     users = users.all()
 
