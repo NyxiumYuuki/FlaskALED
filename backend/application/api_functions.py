@@ -375,7 +375,7 @@ def db_users(ip, user_id, query, by='email,nickname', id=None, is_admin=None, or
                 table='users',
                 id_user=user_id
             )
-            return {'status': 0, 'message': message, 'data': users.json()}
+            return {'status': 0, 'message': message, 'data': [user.json() for user in users]}
         elif id:
             if is_admin:
                 if order_by == 'nickname':
@@ -413,7 +413,7 @@ def db_users(ip, user_id, query, by='email,nickname', id=None, is_admin=None, or
                 table='users',
                 id_user=user_id
             )
-            return {'status': 0, 'message': message, 'data': users.json()}
+            return {'status': 0, 'message': message, 'data': [user.json() for user in users]}
         else:
             message = 'Need q and by field if using query and not id'
             db_create_log(

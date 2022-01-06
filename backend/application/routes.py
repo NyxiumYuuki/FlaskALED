@@ -335,6 +335,6 @@ def users():
         if res['status'] == 1:
             return send_error(500, res['message'])
         else:
-            return send_message(res['message'], None)
+            return send_message(res['message'], res['data'])
     else:
         return send_error(500, token['message'])
