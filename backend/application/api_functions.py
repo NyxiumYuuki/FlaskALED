@@ -281,59 +281,10 @@ def db_users(ip, user_id, query, by='email,nickname', id=None, is_admin=None, or
     # q= or id =
     # if q= then by= (default: email,nickname) or email or nickname
     # is_admin =
-    # order_by = email, nickname, id, is_admin
+    # order_by = (default: email), nickname, id, is_admin
 
     users = Users.query
-    if query is not id:
-        if query:
-            if query and by:
-                if by == 'email':
-                    users = users.filter(Users.email.like(query))
-                elif by == 'nickname':
-                    users = users.filter(Users.nickname.like(query))
-                else:
-                    users = users.filter(or_(Users.nickname.like('%'+query+'%'), Users.email.like('%'+query+'%')))
-            else:
-                message = 'Need q and by field if using query and not id'
-                db_create_log(
-                    ip=ip,
-                    action='users',
-                    message=message,
-                    has_succeeded=False,
-                    status_code=1,
-                    table='users',
-                    id_user=user_id
-                )
-                return {'status': 1, 'message': message}
-        else:
-            users = users.filter(Users.id == id)
-
-        if is_admin is not None:
-            users = users.filter(Users.is_admin == is_admin)
-
-        if order_by == 'nickname':
-            users = users.order_by(asc(Users.nickname))
-        elif order_by == 'id':
-            users = users.order_by(asc(Users.id))
-        elif order_by == 'is_admin':
-            users = users.order_by(asc(Users.is_admin))
-        else:
-            users = users.order_by(asc(Users.is_admin))
-
-        users = users.all()
-
-        message = f'id({id}), is_admin({is_admin}) and order_by({order_by}): {len(users)} result(s)'
-        db_create_log(
-            ip=ip,
-            action='users',
-            message=message,
-            has_succeeded=True,
-            status_code=0,
-            table='users',
-            id_user=user_id
-        )
-        return {'status': 0, 'message': message, 'data': [user.json() for user in users]}
-    else:
+    if query is id and query is not None:
         message = 'Query or id field'
         db_create_log(
             ip=ip,
@@ -345,3 +296,43 @@ def db_users(ip, user_id, query, by='email,nickname', id=None, is_admin=None, or
             id_user=user_id
         )
         return {'status': 1, 'message': message}
+
+    if query and by:
+        if by == 'email':
+            users = users.filter(Users.email.like('%' + query + '%'))
+        elif by == 'nickname':
+            users = users.filter(Users.nickname.like('%' + query + '%'))
+        else:
+            users = users.filter(or_(Users.nickname.like('%' + query + '%'), Users.email.like('%' + query + '%')))
+    elif query and not by:
+        users = users.filter(or_(Users.nickname.like('%' + query + '%'), Users.email.like('%' + query + '%')))
+    elif id:
+        users = users.filter(Users.id == id)
+    else:
+        pass
+
+    if is_admin is not None:
+        users = users.filter(Users.is_admin == is_admin)
+
+    if order_by == 'nickname':
+        users = users.order_by(asc(Users.nickname))
+    elif order_by == 'id':
+        users = users.order_by(asc(Users.id))
+    elif order_by == 'is_admin':
+        users = users.order_by(asc(Users.is_admin))
+    else:
+        users = users.order_by(asc(Users.is_admin))
+
+    users = users.all()
+
+    message = f'id({id}), is_admin({is_admin}) and order_by({order_by}): {len(users)} result(s)'
+    db_create_log(
+        ip=ip,
+        action='users',
+        message=message,
+        has_succeeded=True,
+        status_code=0,
+        table='users',
+        id_user=user_id
+    )
+    return {'status': 0, 'message': message, 'data': [user.json() for user in users]}
