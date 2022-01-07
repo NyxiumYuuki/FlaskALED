@@ -1,6 +1,7 @@
-set FLASK_APP=app.py
-set FLASK_ENV=development
-set FLASK_DEBUG=1
-set PYTHONUNBUFFERED=1
-set DATABASE_URL_1=postgresql://localhost:5433/users
-set DATABASE_URL_2=postgresql://localhost:5434/logs
+export FLASK_APP=app.py
+export FLASK_ENV=development
+export FLASK_DEBUG=1
+export PYTHONUNBUFFERED=1
+export DATABASE_URL_USERS=postgresql://flaskaled1:aled1@localhost:5433/flaskaledDb1
+export DATABASE_URL_LOGS=postgresql://flaskaled2:aled2@localhost:5434/flaskaledDb2
+export SECRET_KEY=\xe6\xfe9;\xddA\x00\xca\xd4\xbb\x05q\xd9q\xe6e\x98DC\x08:+\xc9\x893\xd6\xa7\xea\x1e\x05\x03\xdc
