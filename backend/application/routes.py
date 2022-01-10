@@ -3,7 +3,7 @@ from flask import request
 from .responses import send_message, send_error
 from .api_functions import db_login, db_register, db_user_update, db_create_log, db_user_delete, db_admin_update_user, db_users
 from .sessionJWT import create_auth_token, check_auth_token
-
+print('route imported')
 
 # Login
 @app.route('/api/login', methods=['POST'])
@@ -286,7 +286,7 @@ def admin_delete_user():
                 fields += 'id'
             if post_user_id_delete is not None:
                 if str(post_user_id_delete) != '':
-                    res = db_user_delete(ip, post_user_id_delete)
+                    res = db_user_delete(ip, int(post_user_id_delete))
                     if res['status'] == 1:
                         db_create_log(
                             ip=ip,
@@ -298,7 +298,7 @@ def admin_delete_user():
                             id_user=user_id
                         )
                         return send_error(500, res['message'])
-                    elif res['status'] == 0:
+                    else:
                         db_create_log(
                             ip=ip,
                             action='admin/delete/user',

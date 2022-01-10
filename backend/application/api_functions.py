@@ -1,9 +1,19 @@
+print('hashlib')
 import hashlib
+
 import os
 from datetime import datetime
+
+print('flask_sqlalchemy')
 from flask_sqlalchemy import inspect
+
+print('sqlalchemy')
 from sqlalchemy import asc, desc, or_
+
+print('users_model')
 from .users_model import Users, db
+
+print('logs_model')
 from .logs_model import Logs
 
 
@@ -177,34 +187,49 @@ def db_user_update(ip, user_id, nickname, password):
         return {'status': 1, 'message': message}
 
 
-def db_user_delete(ip, user_id, is_admin=False):
-    if is_admin and Users.query.filter(Users.is_admin == True).count() <= 1 or user_id == 0:
-        message = 'Can\'t delete last admin'
-        db_create_log(
-            ip=ip,
-            action='user_delete',
-            message=message,
-            has_succeeded=False,
-            status_code=2,
-            table='users',
-            id_user=user_id
-        )
-        return {'status': 2, 'message': message}
-
-    test = Users.query.filter(Users.id == user_id).delete()
-    if test == 1:
-        db.session.commit()
-        message = 'User deleted.'
-        db_create_log(
-            ip=ip,
-            action='user_delete',
-            message=message,
-            has_succeeded=True,
-            status_code=0,
-            table='users',
-            id_user=user_id
-        )
-        return {'status': 0, 'message': message, 'data': None}
+def db_user_delete(ip, user_id):
+    user_to_delete = Users.query.filter(Users.id == user_id).scalar()
+    if user_to_delete:
+        is_admin = bool(user_to_delete.json()['is_admin'])
+        if is_admin and (Users.query.filter(Users.is_admin == True).count() <= 1 or user_id == 0):
+            message = 'Can\'t delete last admin'
+            db_create_log(
+                ip=ip,
+                action='user_delete',
+                message=message,
+                has_succeeded=False,
+                status_code=2,
+                table='users',
+                id_user=user_id
+            )
+            return {'status': 2, 'message': message}
+        else:
+            test = Users.query.filter(Users.id == user_id).delete()
+            if test == 1:
+                db.session.commit()
+                message = 'User deleted.'
+                db_create_log(
+                    ip=ip,
+                    action='user_delete',
+                    message=message,
+                    has_succeeded=True,
+                    status_code=0,
+                    table='users',
+                    id_user=user_id
+                )
+                return {'status': 0, 'message': message, 'data': None}
+            else:
+                message = 'User do not exist.'
+                db_create_log(
+                    ip=ip,
+                    action='user_delete',
+                    message=message,
+                    has_succeeded=False,
+                    status_code=1,
+                    table='users',
+                    id_user=user_id
+                )
+                return {'status': 1, 'message': message}
     else:
         message = 'User do not exist.'
         db_create_log(
