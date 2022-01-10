@@ -1,3 +1,4 @@
+print("test")
 import hashlib
 import os
 from datetime import datetime
@@ -5,6 +6,7 @@ from flask_sqlalchemy import inspect
 from sqlalchemy import asc, desc, or_
 from .users_model import Users, db
 from .logs_model import Logs
+print("blabla")
 
 
 def db_create_log(ip, action, message, has_succeeded, status_code, table=None, id_user=None):
