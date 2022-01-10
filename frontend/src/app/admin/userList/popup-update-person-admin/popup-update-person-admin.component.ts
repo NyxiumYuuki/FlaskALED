@@ -87,19 +87,7 @@ export class PopupUpdatePersonAdminComponent implements OnInit
     // Check les champs saisis par l'utilisateur
     checkField(): void
     {
-        if(this.personCopy.nickname.length === 0) {
-            this.errorMessage = "Veuillez remplir le champ 'pseudo'" ;
-            this.hasError = true;
-        }
-        else if(this.personCopy.email.length === 0) {
-            this.errorMessage = "Veuillez remplir le champ 'email'" ;
-            this.hasError = true;
-        }
-        else if(!this.checkEmailService.isValidEmail(this.personCopy.email)) {
-            this.errorMessage = "Email invalide" ;
-            this.hasError = true;
-        }
-        else if((this.changePassword) && (this.newPassword.length === 0)) {
+        if((this.changePassword) && (this.newPassword.length === 0)) {
             this.errorMessage = "Veuillez remplir le champ 'mot de passe'";
             this.hasError = true;
         }
