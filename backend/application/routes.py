@@ -3,7 +3,7 @@ from flask import request
 from .responses import send_message, send_error
 from .api_functions import db_login, db_register, db_user_update, db_create_log, db_user_delete, db_admin_update_user, db_users
 from .sessionJWT import create_auth_token, check_auth_token
-print('route imported')
+
 
 # Login
 @app.route('/api/login', methods=['POST'])

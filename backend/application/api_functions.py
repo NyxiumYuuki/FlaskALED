@@ -1,19 +1,9 @@
-print('hashlib')
 import hashlib
-
 import os
 from datetime import datetime
-
-print('flask_sqlalchemy')
 from flask_sqlalchemy import inspect
-
-print('sqlalchemy')
 from sqlalchemy import asc, desc, or_
-
-print('users_model')
 from .users_model import Users, db
-
-print('logs_model')
 from .logs_model import Logs
 
 

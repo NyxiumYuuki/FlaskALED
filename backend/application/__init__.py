@@ -19,13 +19,17 @@ def create_app():
         app.config.from_object("config.Config")
 
     if app.config['SQLALCHEMY_DATABASE_URI_1'] is None or app.config['SQLALCHEMY_DATABASE_URI_2'] is None:
-        print('No ENV Variable for DATABASE_URL_1 or DATABASE_URL_2')
+        print('No ENV Variable for DATABASE_URL_USERS or DATABASE_URL_LOGS')
         sys.exit(1)
     else:
         print('ENV Variables passed : ', app.config['SQLALCHEMY_BINDS'])
 
+    print('init_app')
     db.init_app(app)
     with app.app_context():
+        print('import routes')
         from . import routes
+        print('db.create_all')
         db.create_all()
+        print('db created')
     return app

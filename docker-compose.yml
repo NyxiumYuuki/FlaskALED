@@ -9,9 +9,11 @@ services:
     volumes:
       - ./backend/init-db1.sql:/docker-entrypoint-initdb.d/init-db1.sql
     environment:
+      - POSTGRES_HOST=flaskaled-srv1
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=flaskaledDb1
       - POSTGRES_USER=flaskaled1
       - POSTGRES_PASSWORD=aled1
-      - POSTGRES_DB=flaskaledDb1
     restart: unless-stopped
 
   flaskaled-srv2:
@@ -22,32 +24,35 @@ services:
     volumes:
       - ./backend/init-db2.sql:/docker-entrypoint-initdb.d/init-db2.sql
     environment:
+      - POSTGRES_HOST=flaskaled-srv2
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=flaskaledDb2
       - POSTGRES_USER=flaskaled2
       - POSTGRES_PASSWORD=aled2
-      - POSTGRES_DB=flaskaledDb2
     restart: unless-stopped
-#
-#  backend:
-#    container_name: backend
-#    build: ./backend
-#    command: node server.js
-#    volumes:
-#      - ./backend:/data/backend
-#    ports:
-#      - "5000:5000"
-#    depends_on:
-#      - flaskaled-srv1
-#      - flaskaled-srv2
-#    links:
-#      - flaskaled-srv1
-#      - flaskaled-srv2
-#    environment:
-#      FLASK_ENV: development
-#      FLASK_DEBUG: 1
-#      #DATABASE_URL_USERS:
-#      #DATABASE_URL_LOGS:
-#      #SECRET_KEY:
-#      #ALLOW_ORIGIN:
+
+  backend:
+    container_name: backend
+    build: ./backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/data/backend
+    depends_on:
+      - flaskaled-srv1
+      - flaskaled-srv2
+    links:
+      - flaskaled-srv1
+      - flaskaled-srv2
+    environment:
+      FLASK_APP: app.py
+      FLASK_ENV: development
+      FLASK_DEBUG: 1
+      PYTHONUNBUFFERED: 1
+      DATABASE_URL_USERS: postgresql://flaskaled1:aled1@flaskaled-srv1/flaskaledDb1
+      DATABASE_URL_LOGS: postgresql://flaskaled2:aled2@flaskaled-srv2/flaskaledDb2
+      #SECRET_KEY: default_secret_key
+      #ALLOW_ORIGIN: *
 #
 #  frontend:
 #    container_name: frontend
