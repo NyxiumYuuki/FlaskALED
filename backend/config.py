@@ -30,8 +30,8 @@ class ProductionConfig(Config):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
-class StagingConfig(Config):
-    STAGING = True
+class TestingConfig(Config):
+    TESTING = True
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 

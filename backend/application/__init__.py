@@ -6,14 +6,13 @@ import os
 db = SQLAlchemy()
 
 
-def create_app():
+def create_app(flask_env='development'):
     app = Flask(__name__, instance_relative_config=False)
-    FLASK_ENV = os.environ.get('FLASK_ENV', None)
-    if FLASK_ENV == 'production':
+    if flask_env == 'production':
         app.config.from_object("config.ProductionConfig")
-    elif FLASK_ENV == 'staging':
-        app.config.from_object("config.StagingConfig")
-    elif FLASK_ENV == 'development':
+    elif flask_env == 'testing':
+        app.config.from_object("config.TestingConfig")
+    elif flask_env == 'development':
         app.config.from_object("config.DevelopmentConfig")
     else:
         app.config.from_object("config.Config")
