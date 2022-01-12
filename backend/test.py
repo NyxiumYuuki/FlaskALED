@@ -189,49 +189,94 @@ class FlaskTestCase(BaseTestCase):
 
     # --- LOGOUT ---
 
-    def test_logout_fail_(self):
-        response = self.client.delete('/api/logout')
+    # def test_logout_fail_(self):
+    #     response = self.client.delete('/api/logout')
+    #     self.assertEqual(response.status_code, 500)
+
+
+    # def test_logout_success(self):
+    #     response = self.login("riri@gmail.com", "ririPass")
+    #     if response.status_code == 200:
+    #         response = self.client.delete('/api/logout')
+    #         self.assertEqual(response.status_code, 200)
+    #     else:
+    #         self.assertEqual(True, False)
+
+
+
+    # # --- SELF UPDATE  ---
+
+    def test_selfUpdate_notConnected_statusCode(self):
+        data0 = {}
+        response = self.client.put('/api/user/update', json=data0)
         self.assertEqual(response.status_code, 500)
 
 
-    def test_logout_success(self):
+    def test_selfUpdate_notConnected_message(self):
+        data0 = {}
+        response = self.client.put('/api/user/update', json=data0)
+        self.assertEqual(response.json['message'], 'User not authenticated.')
+
+
+    def test_selfUpdate_noFields_statusCode(self):
         response = self.login("riri@gmail.com", "ririPass")
         if response.status_code == 200:
-            response = self.client.delete('/api/logout')
+            data0 = {}
+            response = self.client.put('/api/user/update', json=data0)
+            self.assertEqual(response.status_code, 400)
+        else:
+            self.assertEqual(True, False)
+
+
+    def test_selfUpdate_noFields_message(self):
+        response = self.login("riri@gmail.com", "ririPass")
+        if response.status_code == 200:
+            data0 = {}
+            response = self.client.put('/api/user/update', json=data0)
+            self.assertIn('Need', response.json['message'])
+        else:
+            self.assertEqual(True, False)
+
+
+    def test_selfUpdate_emptyFields_statusCode(self):
+        response = self.login("riri@gmail.com", "ririPass")
+        if response.status_code == 200:
+            data0 = {
+                "nickname": "",
+                "password": "blabla" 
+            }
+            response = self.client.put('/api/user/update', json=data0)
+            self.assertEqual(response.status_code, 400)
+        else:
+            self.assertEqual(True, False)
+
+
+    def test_selfUpdate_emptyFields_message(self):
+        response = self.login("riri@gmail.com", "ririPass")
+        if response.status_code == 200:
+            data0 = {
+                "nickname": "",
+                "password": "blabla" 
+            }
+            response = self.client.put('/api/user/update', json=data0)
+            self.assertEqual(response.json['message'], 'Empty nickname and/or password fields.')
+        else:
+            self.assertEqual(True, False)
+
+
+    def test_self_update_success_statusCode(self):
+        response = self.login("riri@gmail.com", "ririPass")
+        if response.status_code == 200:
+            data0 = {
+                "nickname": "Ririri",
+                "password": "ririPass" 
+            }
+            response = self.client.put('/api/user/update', json=data0)
             self.assertEqual(response.status_code, 200)
         else:
             self.assertEqual(True, False)
 
-    # # --- SELF UPDATE  ---
 
-    # def test_self_update_not_connected(self):
-    #     data0 = json.dumps({})
-    #     response = self.client.put('/api/user/update', data=data0)
-    #     self.assertEqual(response.status_code, 500)
-
-    # def test_self_update_no_fields(self):
-    #     self.login('riri@gmail.com', 'ririPass')
-    #     data0 = json.dumps({})
-    #     response = self.client.put('/api/user/update', data=data0)
-    #     self.assertIn('Need', response.json['message'])
-
-    # def test_self_update_empty_fields(self):
-    #     self.login('riri@gmail.com', 'ririPass')
-    #     data0 = json.dumps({
-    #         "nickname": "",
-    #         "password": "blabla" 
-    #     })
-    #     response = self.client.put('/api/user/update', data=data0)
-    #     self.assertEqual(response.json['message'], 'Empty nickname and/or password fields.')
-
-    # def test_self_update_success(self):
-    #     self.login('riri@gmail.com', 'ririPass')
-    #     data0 = json.dumps({
-    #         "nickname": "Ririri",
-    #         "password": "ririPass" 
-    #     })
-    #     response = self.client.put('/api/user/update', data=data0)
-    #     self.assertEqual(response.status_code, 200)
 
     # # --- SELF DELETE  ---
 
