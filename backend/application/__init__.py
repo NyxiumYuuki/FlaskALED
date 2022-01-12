@@ -20,8 +20,8 @@ def create_app(flask_env='development'):
     if app.config['SQLALCHEMY_DATABASE_URI_1'] is None or app.config['SQLALCHEMY_DATABASE_URI_2'] is None:
         print('No ENV Variable for DATABASE_URL_USERS or DATABASE_URL_LOGS')
         sys.exit(1)
-    #else:
-    #    print('ENV Variables passed : ', app.config['SQLALCHEMY_BINDS'])
+    else:
+        print('ENV Variables passed : ', app.config['SQLALCHEMY_BINDS'])
 
     print('init_app')
     db.init_app(app)
