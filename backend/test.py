@@ -36,12 +36,13 @@ class FlaskTestCase(BaseTestCase):
 
     # -- UTILS ---
 
-    # def login(self, email, password):
-    #     data0 = json.dumps({
-    #         "email": email,
-    #         "password": password
-    #     })
-    #     response = self.client.post('/api/login', data=data0)
+    def login(self, email, password):
+        data0 = {
+            "email": email,
+            "password": password
+        }
+        response = self.client.post('/api/login', json=data0)
+        return response
 
     # --- LOGIN ---
 
@@ -114,88 +115,92 @@ class FlaskTestCase(BaseTestCase):
 
     # --- REGISTER ---
 
-    def test_register_noFields_statusCode(self):
-        data0 = {}
-        response = self.client.post('/api/register', json=data0)
-        self.assertEqual(response.status_code, 400)
+    # def test_register_noFields_statusCode(self):
+    #     data0 = {}
+    #     response = self.client.post('/api/register', json=data0)
+    #     self.assertEqual(response.status_code, 400)
 
 
-    def test_register_noFields_message(self):
-        data0 = {}
-        response = self.client.post('/api/register', json=data0)
-        self.assertIn('Need', response.json['message'])
+    # def test_register_noFields_message(self):
+    #     data0 = {}
+    #     response = self.client.post('/api/register', json=data0)
+    #     self.assertIn('Need', response.json['message'])
 
 
-    def test_register_emptyFields_statusCode(self):
-        data0 = {
-            "email": "",
-            "password": "blabla",
-            "nickname": "blabla"
-        }
-        response = self.client.post('/api/register', json=data0)
-        self.assertEqual(response.status_code, 400)
+    # def test_register_emptyFields_statusCode(self):
+    #     data0 = {
+    #         "email": "",
+    #         "password": "blabla",
+    #         "nickname": "blabla"
+    #     }
+    #     response = self.client.post('/api/register', json=data0)
+    #     self.assertEqual(response.status_code, 400)
 
 
-    def test_register_emptyFields_message(self):
-        data0 = {
-            "email": "",
-            "password": "blabla",
-            "nickname": "blabla"
-        }
-        response = self.client.post('/api/register', json=data0)
-        self.assertEqual(response.json['message'], 'Empty email and/or password and/or nickname fields.')
+    # def test_register_emptyFields_message(self):
+    #     data0 = {
+    #         "email": "",
+    #         "password": "blabla",
+    #         "nickname": "blabla"
+    #     }
+    #     response = self.client.post('/api/register', json=data0)
+    #     self.assertEqual(response.json['message'], 'Empty email and/or password and/or nickname fields.')
 
 
-    def test_register_alreadyExist_statusCode(self):
-        data0 = {
-            "email": "riri@gmail.com",
-            "password": "blabla",
-            "nickname": "blabla"
-        }
-        response = self.client.post('/api/register', json=data0)
+    # def test_register_alreadyExist_statusCode(self):
+    #     data0 = {
+    #         "email": "riri@gmail.com",
+    #         "password": "blabla",
+    #         "nickname": "blabla"
+    #     }
+    #     response = self.client.post('/api/register', json=data0)
+    #     self.assertEqual(response.status_code, 500)
+
+
+    # def test_register_alreadyExist_statusCode(self):
+    #     data0 = {
+    #         "email": "riri@gmail.com",
+    #         "password": "blabla",
+    #         "nickname": "blabla"
+    #     }
+    #     response = self.client.post('/api/register', json=data0)
+    #     self.assertIn('already exist', response.json['message'])
+
+
+    # def test_register_success_statusCode(self):
+    #     data0 = {
+    #         "email": "loulou@gmail.com",
+    #         "password": "loulouPass",
+    #         "nickname": "Loulou"
+    #     }
+    #     response = self.client.post('/api/register', json=data0)
+    #     self.assertEqual(response.status_code, 200)
+
+
+    # def test_register_success_message(self):
+    #     data0 = {
+    #         "email": "loulou@gmail.com",
+    #         "password": "loulouPass",
+    #         "nickname": "Loulou"
+    #     }
+    #     response = self.client.post('/api/register', json=data0)
+    #     self.assertEqual(response.json['message'], 'User registered.')
+
+
+    # --- LOGOUT ---
+
+    def test_logout_fail_(self):
+        response = self.client.delete('/api/logout')
         self.assertEqual(response.status_code, 500)
 
 
-    def test_register_alreadyExist_statusCode(self):
-        data0 = {
-            "email": "riri@gmail.com",
-            "password": "blabla",
-            "nickname": "blabla"
-        }
-        response = self.client.post('/api/register', json=data0)
-        self.assertIn('already exist', response.json['message'])
-
-
-    def test_register_success_statusCode(self):
-        data0 = {
-            "email": "loulou@gmail.com",
-            "password": "loulouPass",
-            "nickname": "Loulou"
-        }
-        response = self.client.post('/api/register', json=data0)
-        self.assertEqual(response.status_code, 200)
-
-
-    def test_register_success_message(self):
-        data0 = {
-            "email": "loulou@gmail.com",
-            "password": "loulouPass",
-            "nickname": "Loulou"
-        }
-        response = self.client.post('/api/register', json=data0)
-        self.assertEqual(response.json['message'], 'User registered.')
-
-
-    # # --- LOGOUT ---
-
-    # def test_logout_fail(self):
-    #     response = self.client.delete('/api/logout')
-    #     self.assertEqual(response.status_code, 500)
-
-    # def test_logout_success(self):
-    #     self.login_user()
-    #     response = self.client.delete('/api/logout')
-    #     self.assertEqual(response.status_code, 200)
+    def test_logout_success(self):
+        response = self.login("riri@gmail.com", "ririPass")
+        if response.status_code == 200:
+            response = self.client.delete('/api/logout')
+            self.assertEqual(response.status_code, 200)
+        else:
+            self.assertEqual(True, False)
 
     # # --- SELF UPDATE  ---
 
