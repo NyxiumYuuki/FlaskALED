@@ -10,8 +10,8 @@ bp = Blueprint('myapp', __name__)
 # Login
 @bp.route('/api/login', methods=['POST'])
 def login():
+    post_json = request.json
     try:
-        post_json = request.json
         post_email = str(post_json['email'])
         post_password = str(post_json['password'])
         if post_email != '' and post_password != '':
