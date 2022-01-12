@@ -10,10 +10,10 @@ bp = Blueprint('myapp', __name__)
 # Login
 @bp.route('/api/login', methods=['POST'])
 def login():
-    post_json = request.json
-    post_email = str(post_json['email'])
-    post_password = str(post_json['password'])
-    if post_email and post_password:
+    try:
+        post_json = request.json
+        post_email = str(post_json['email'])
+        post_password = str(post_json['password'])
         if post_email != '' and post_password != '':
             ip = request.remote_addr
             res = db_login(ip, post_email, post_password)
@@ -27,7 +27,7 @@ def login():
                 return send_error(404, res['message'], token)
         else:
             return send_error(400, 'Empty email and/or password fields.')
-    else:
+    except KeyError as e:
         return send_error(400, 'Need email, password fields.')
 
 
@@ -39,17 +39,15 @@ def register():
         post_email = str(post_json['email'])
         post_nickname = str(post_json['nickname'])
         post_password = str(post_json['password'])
-
-        if post_email and post_nickname and post_password:
-            if post_email != '' and post_password != '' and post_nickname != '':
-                ip = request.remote_addr
-                res = db_register(ip, post_email, post_nickname, post_password)
-                if res['status'] == 1:
-                    return send_error(500, res['message'])
-                elif res['status'] == 0:
-                    return send_message(res['message'], res['data'])
-            else:
-                return send_error(400, 'Empty email and/or password and/or nickname fields.')
+        if post_email != '' and post_password != '' and post_nickname != '':
+            ip = request.remote_addr
+            res = db_register(ip, post_email, post_nickname, post_password)
+            if res['status'] == 1:
+                return send_error(500, res['message'])
+            elif res['status'] == 0:
+                return send_message(res['message'], res['data'])
+        else:
+            return send_error(400, 'Empty email and/or password and/or nickname fields.')
     except KeyError as e:
         return send_error(400, 'Need ' + str(e) + 'field.')
 
