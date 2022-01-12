@@ -28,6 +28,7 @@ def create_app(flask_env='development'):
     with app.app_context():
         print('import routes')
         from . import routes
+        app.register_blueprint(routes.bp)
         print('db.create_all')
         db.create_all()
         print('db created')

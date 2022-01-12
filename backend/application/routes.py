@@ -1,12 +1,14 @@
-from flask import current_app as app
-from flask import request
+from flask import request, Blueprint
 from .responses import send_message, send_error
-from .api_functions import db_login, db_register, db_user_update, db_create_log, db_user_delete, db_admin_update_user, db_users
+from .api_functions import db_login, db_register, db_user_update, db_create_log, db_user_delete, db_admin_update_user, \
+    db_users
 from .sessionJWT import create_auth_token, check_auth_token
+
+bp = Blueprint('myapp', __name__)
 
 
 # Login
-@app.route('/api/login', methods=['POST'])
+@bp.route('/api/login', methods=['POST'])
 def login():
     post_json = request.json
     post_email = str(post_json['email'])
@@ -30,7 +32,7 @@ def login():
 
 
 # Register
-@app.route('/api/register', methods=['POST'])
+@bp.route('/api/register', methods=['POST'])
 def register():
     post_json = request.json
     try:
@@ -49,11 +51,11 @@ def register():
             else:
                 return send_error(400, 'Empty email and/or password and/or nickname fields.')
     except KeyError as e:
-        return send_error(400, 'Need '+str(e)+'field.')
+        return send_error(400, 'Need ' + str(e) + 'field.')
 
 
 # Logout
-@app.route('/api/logout', methods=['DELETE'])
+@bp.route('/api/logout', methods=['DELETE'])
 def logout():
     token = check_auth_token(request)
     if token['success']:
@@ -74,7 +76,7 @@ def logout():
 
 
 # Update User (Nickname, Password)
-@app.route('/api/user/update', methods=['PUT'])
+@bp.route('/api/user/update', methods=['PUT'])
 def user_update():
     token = check_auth_token(request)
     if token['success']:
@@ -110,7 +112,7 @@ def user_update():
 
 
 # Delete User
-@app.route('/api/user/delete', methods=['DELETE'])
+@bp.route('/api/user/delete', methods=['DELETE'])
 def user_delete():
     token = check_auth_token(request)
     if token['success']:
@@ -135,7 +137,7 @@ def user_delete():
 
 
 # Admin : Create User
-@app.route('/api/admin/create/user', methods=['POST'])
+@bp.route('/api/admin/create/user', methods=['POST'])
 def admin_create_user():
     token = check_auth_token(request)
     if token['success']:
@@ -205,7 +207,7 @@ def admin_create_user():
 
 
 # Admin : Change User password and/or role
-@app.route('/api/admin/update/user', methods=['PUT'])
+@bp.route('/api/admin/update/user', methods=['PUT'])
 def admin_update_user():
     token = check_auth_token(request)
     if token['success']:
@@ -269,7 +271,7 @@ def admin_update_user():
 
 
 # Admin : Delete User
-@app.route('/api/admin/delete/user', methods=['DELETE'])
+@bp.route('/api/admin/delete/user', methods=['DELETE'])
 def admin_delete_user():
     token = check_auth_token(request)
     if token['success']:
@@ -320,7 +322,7 @@ def admin_delete_user():
 
 
 # List of User (must be authenticated) & Search
-@app.route('/api/users', methods=['GET'])
+@bp.route('/api/users', methods=['GET'])
 def users():
     token = check_auth_token(request)
     if token['success']:
