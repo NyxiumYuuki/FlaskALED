@@ -45,126 +45,146 @@ class FlaskTestCase(BaseTestCase):
 
     # --- LOGIN ---
 
-    def test_login_NoFields_statusCode(self):
-        data0 = {}
-        response = self.client.post('/api/login', json=data0)
-        self.assertEqual(response.status_code, 400)
+    # def test_login_NoFields_statusCode(self):
+    #     data0 = {}
+    #     response = self.client.post('/api/login', json=data0)
+    #     self.assertEqual(response.status_code, 400)
 
 
-    def test_login_NoFields_message(self):
-        data0 = {}
-        response = self.client.post('/api/login', json=data0)
-        self.assertEqual(response.json['message'], 'Need email, password fields.')
+    # def test_login_NoFields_message(self):
+    #     data0 = {}
+    #     response = self.client.post('/api/login', json=data0)
+    #     self.assertEqual(response.json['message'], 'Need email, password fields.')
 
 
-    def test_login_emptyFields_statusCode(self):
-        data0 = {
-            "email": "",
-            "password": "blabla"
-        }
-        response = self.client.post('/api/login', json=data0)
-        self.assertEqual(response.status_code, 400)
+    # def test_login_emptyFields_statusCode(self):
+    #     data0 = {
+    #         "email": "",
+    #         "password": "blabla"
+    #     }
+    #     response = self.client.post('/api/login', json=data0)
+    #     self.assertEqual(response.status_code, 400)
 
 
-    def test_login_emptyFields_message(self):
-        data0 = {
-            "email": "",
-            "password": "blabla"
-        }
-        response = self.client.post('/api/login', json=data0)
-        self.assertEqual(response.json['message'], 'Empty email and/or password fields.')
+    # def test_login_emptyFields_message(self):
+    #     data0 = {
+    #         "email": "",
+    #         "password": "blabla"
+    #     }
+    #     response = self.client.post('/api/login', json=data0)
+    #     self.assertEqual(response.json['message'], 'Empty email and/or password fields.')
 
 
-    def test_login_wrongFields_statusCode(self):
-        data0 = {
-            "email": "nimp@gmail.com",
-            "password": "nimp"
-        }
-        response = self.client.post('/api/login', json=data0)
-        self.assertEqual(response.status_code, 404)
+    # def test_login_wrongFields_statusCode(self):
+    #     data0 = {
+    #         "email": "nimp@gmail.com",
+    #         "password": "nimp"
+    #     }
+    #     response = self.client.post('/api/login', json=data0)
+    #     self.assertEqual(response.status_code, 404)
 
 
-    def test_login_wrongFields_message(self):
-        data0 = {
-            "email": "nimp@gmail.com",
-            "password": "nimp"
-        }
-        response = self.client.post('/api/login', json=data0)
-        self.assertEqual(response.json['message'], 'Email or password invalid')
+    # def test_login_wrongFields_message(self):
+    #     data0 = {
+    #         "email": "nimp@gmail.com",
+    #         "password": "nimp"
+    #     }
+    #     response = self.client.post('/api/login', json=data0)
+    #     self.assertEqual(response.json['message'], 'Email or password invalid')
 
 
-    def test_login_success_statusCode(self):
-        data0 = {
-            "email": "riri@gmail.com",
-            "password": "ririPass"
-        }
-        response = self.client.post('/api/login', json=data0)
-        self.assertEqual(response.status_code, 200)
+    # def test_login_success_statusCode(self):
+    #     data0 = {
+    #         "email": "riri@gmail.com",
+    #         "password": "ririPass"
+    #     }
+    #     response = self.client.post('/api/login', json=data0)
+    #     self.assertEqual(response.status_code, 200)
 
 
-    def test_login_success_message(self):
-        data0 = {
-            "email": "riri@gmail.com",
-            "password": "ririPass"
-        }
-        response = self.client.post('/api/login', json=data0)
-        self.assertEqual(response.json['message'], 'User authenticated.')
+    # def test_login_success_message(self):
+    #     data0 = {
+    #         "email": "riri@gmail.com",
+    #         "password": "ririPass"
+    #     }
+    #     response = self.client.post('/api/login', json=data0)
+    #     self.assertEqual(response.json['message'], 'User authenticated.')
 
 
 
     # --- REGISTER ---
 
-    # def test_register_noFields_statusCode(self):
-    #     data0 = {}
-    #     response = self.client.post('/api/register', json=data0)
-    #     self.assertEqual(response.status_code, 400)
+    def test_register_noFields_statusCode(self):
+        data0 = {}
+        response = self.client.post('/api/register', json=data0)
+        self.assertEqual(response.status_code, 400)
 
 
-    # def test_register_noFields_message(self):
-    #     data0 = {}
-    #     response = self.client.post('/api/register', json=data0)
-    #     self.assertIn('Need', response.json['message'])
+    def test_register_noFields_message(self):
+        data0 = {}
+        response = self.client.post('/api/register', json=data0)
+        self.assertIn('Need', response.json['message'])
 
 
-    # def test_register_emptyFields_statusCode(self):
-    #     data0 = {
-    #         "email": "",
-    #         "password": "blabla",
-    #         "nickname": "blabla"
-    #     }
-    #     response = self.client.post('/api/register', json=data0)
-    #     self.assertEqual(response.status_code, 400)
+    def test_register_emptyFields_statusCode(self):
+        data0 = {
+            "email": "",
+            "password": "blabla",
+            "nickname": "blabla"
+        }
+        response = self.client.post('/api/register', json=data0)
+        self.assertEqual(response.status_code, 400)
 
 
-    # def test_register_emptyFields_message(self):
-    #     data0 = {
-    #         "email": "",
-    #         "password": "blabla",
-    #         "nickname": "blabla"
-    #     }
-    #     response = self.client.post('/api/register', json=data0)
-    #     self.assertIn('Need', response.json['message'])
+    def test_register_emptyFields_message(self):
+        data0 = {
+            "email": "",
+            "password": "blabla",
+            "nickname": "blabla"
+        }
+        response = self.client.post('/api/register', json=data0)
+        self.assertEqual(response.json['message'], 'Empty email and/or password and/or nickname fields.')
 
 
-    # def test_register_alreadyExist_statusCode(self):
-    #     data0 = json.dumps({
-    #         "email": "riri@gmail.com",
-    #         "password": "blabla",
-    #         "nickname": "blabla"
-    #     })
-    #     response = self.client.post('/api/register', json=data0)
-    #     self.assertIn('already exist', response.message)
+    def test_register_alreadyExist_statusCode(self):
+        data0 = {
+            "email": "riri@gmail.com",
+            "password": "blabla",
+            "nickname": "blabla"
+        }
+        response = self.client.post('/api/register', json=data0)
+        self.assertEqual(response.status_code, 500)
 
 
+    def test_register_alreadyExist_statusCode(self):
+        data0 = {
+            "email": "riri@gmail.com",
+            "password": "blabla",
+            "nickname": "blabla"
+        }
+        response = self.client.post('/api/register', json=data0)
+        self.assertIn('already exist', response.json['message'])
 
-    # def test_register_success(self):
-    #     data0 = json.dumps({
-    #         "email": "loulou@gmail.com",
-    #         "password": "loulouPass",
-    #         "nickname": "Loulou"
-    #     })
-    #     response = self.client.post('/api/register', json=data0)
-    #     self.assertEqual(response.message, 'User registered.')
+
+    def test_register_success_statusCode(self):
+        data0 = {
+            "email": "loulou@gmail.com",
+            "password": "loulouPass",
+            "nickname": "Loulou"
+        }
+        response = self.client.post('/api/register', json=data0)
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_register_success_message(self):
+        data0 = {
+            "email": "loulou@gmail.com",
+            "password": "loulouPass",
+            "nickname": "Loulou"
+        }
+        response = self.client.post('/api/register', json=data0)
+        self.assertEqual(response.json['message'], 'User registered.')
+
 
     # # --- LOGOUT ---
 
@@ -188,7 +208,7 @@ class FlaskTestCase(BaseTestCase):
     #     self.login('riri@gmail.com', 'ririPass')
     #     data0 = json.dumps({})
     #     response = self.client.put('/api/user/update', data=data0)
-    #     self.assertIn('Need', response.message)
+    #     self.assertIn('Need', response.json['message'])
 
     # def test_self_update_empty_fields(self):
     #     self.login('riri@gmail.com', 'ririPass')
@@ -197,7 +217,7 @@ class FlaskTestCase(BaseTestCase):
     #         "password": "blabla" 
     #     })
     #     response = self.client.put('/api/user/update', data=data0)
-    #     self.assertEqual(response.message, 'Empty nickname and/or password fields.')
+    #     self.assertEqual(response.json['message'], 'Empty nickname and/or password fields.')
 
     # def test_self_update_success(self):
     #     self.login('riri@gmail.com', 'ririPass')
@@ -222,26 +242,26 @@ class FlaskTestCase(BaseTestCase):
     # def test_self_delete_last_admin(self):
     #     self.login('daisy@gmail.com', 'daisyPass')
     #     response = self.client.delete('/api/user/delete')
-    #     self.assertEqual(response.message, 'Can\'t delete last admin')
+    #     self.assertEqual(response.json['message'], 'Can\'t delete last admin')
 
     # # --- admin: CREATE USER ---
 
     # def test_admin_create_not_connected(self):
     #     data0 = json.dumps({})
     #     response = self.client.post('/api/admin/create/user', data=data0)
-    #     self.assertEqual(response.message, 'User not authenticated.')
+    #     self.assertEqual(response.json['message'], 'User not authenticated.')
 
     # def test_admin_create_no_permission(self):
     #     self.login('riri@gmail.com', 'ririPass')
     #     data0 = json.dumps({})
     #     response = self.client.post('/api/admin/create/user', data=data0)
-    #     self.assertEqual(response.message, 'User does not have permission.')
+    #     self.assertEqual(response.json['message'], 'User does not have permission.')
 
     # def test_admin_create_no_fields(self):
     #     self.login('daisy@gmail.com', 'daisyPass')
     #     data0 = json.dumps({})
     #     response = self.client.post('/api/admin/create/user', data=data0)
-    #     self.assertIn('Need', response.message)
+    #     self.assertIn('Need', response.json['message'])
 
     # def test_admin_create_empty_fields(self):
     #     self.login('daisy@gmail.com', 'daisyPass')
@@ -252,7 +272,7 @@ class FlaskTestCase(BaseTestCase):
     #         "is_admin": true, 
     #     })
     #     response = self.client.post('/api/admin/create/user', data=data0)
-    #     self.assertEqual(response.message, 'Empty email and/or nickname and/or password and/or is_admin fields.')
+    #     self.assertEqual(response.json['message'], 'Empty email and/or nickname and/or password and/or is_admin fields.')
 
     # def test_admin_create_already_exist(self):
     #     self.login('daisy@gmail.com', 'daisyPass')
@@ -262,7 +282,7 @@ class FlaskTestCase(BaseTestCase):
     #         "nickname": "blabla",
     #     })
     #     response = self.client.post('/api/admin/create/user', data=data0)
-    #     self.assertIn('already exist', response.message)
+    #     self.assertIn('already exist', response.json['message'])
 
     # def test_admin_create_success(self):
     #     self.login('daisy@gmail.com', 'daisyPass')
@@ -273,26 +293,26 @@ class FlaskTestCase(BaseTestCase):
     #         "is_admin": true, 
     #     })
     #     response = self.client.post('/api/admin/create/user', data=data0)
-    #     self.assertEqual(response.message, 'User registered.')
+    #     self.assertEqual(response.json['message'], 'User registered.')
 
     # # --- admin: UPDATE USER ---
 
     # def test_admin_update_not_connected(self):
     #     data0 = json.dumps({})
     #     response = self.client.put('/api/admin/update/user', data=data0)
-    #     self.assertEqual(response.message, 'User not authenticated.')
+    #     self.assertEqual(response.json['message'], 'User not authenticated.')
 
     # def test_admin_update_no_permission(self):
     #     self.login('riri@gmail.com', 'ririPass')
     #     data0 = json.dumps({})
     #     response = self.client.put('/api/admin/update/user', data=data0)
-    #     self.assertEqual(response.message, 'User does not have permission.')
+    #     self.assertEqual(response.json['message'], 'User does not have permission.')
 
     # def test_admin_update_no_fields(self):
     #     self.login('daisy@gmail.com', 'daisyPass')
     #     data0 = json.dumps({})
     #     response = self.client.put('/api/admin/update/user', data=data0)
-    #     self.assertIn('Need', response.message)
+    #     self.assertIn('Need', response.json['message'])
 
     # def test_admin_update_empty_fields(self):
     #     self.login('daisy@gmail.com', 'daisyPass')
@@ -302,7 +322,7 @@ class FlaskTestCase(BaseTestCase):
     #         "is_admin": false,
     #     })
     #     response = self.client.put('/api/admin/update/user', data=data0)
-    #     self.assertEqual(response.message, 'Empty is_admin and/or password fields.')
+    #     self.assertEqual(response.json['message'], 'Empty is_admin and/or password fields.')
 
     # def test_admin_update_not_exists(self):
     #     self.login('daisy@gmail.com', 'daisyPass')
@@ -312,7 +332,7 @@ class FlaskTestCase(BaseTestCase):
     #         "is_admin": false,
     #     })
     #     response = self.client.put('/api/admin/update/user', data=data0)
-    #     self.assertEqual(response.message, 'User do not exist.')
+    #     self.assertEqual(response.json['message'], 'User do not exist.')
 
     # def test_admin_update_success(self):
     #     self.login('daisy@gmail.com', 'daisyPass')
@@ -328,24 +348,24 @@ class FlaskTestCase(BaseTestCase):
 
     # def test_admin_delete_not_connected(self):
     #     response = self.client.delete('/api/admin/delete/user')
-    #     self.assertEqual(response.message, 'User not authenticated.')
+    #     self.assertEqual(response.json['message'], 'User not authenticated.')
 
     # def test_admin_delete_no_permission(self):
     #     self.login('riri@gmail.com', 'ririPass')
     #     response = self.client.delete('/api/admin/delete/user')
-    #     self.assertEqual(response.message, 'User does not have permission.')
+    #     self.assertEqual(response.json['message'], 'User does not have permission.')
 
     # def test_admin_delete_no_fields(self):
     #     self.login('daisy@gmail.com', 'daisyPass')
     #     data0 = json.dumps({})
     #     response = self.client.delete('/api/admin/delete/user')
-    #     self.assertIn('Need', response.message)
+    #     self.assertIn('Need', response.json['message'])
 
     # def test_admin_delete_not_exists(self):
     #     self.login('daisy@gmail.com', 'daisyPass')
     #     data0 = json.dumps({"id": 99})
     #     response = self.client.delete('/api/admin/delete/user')
-    #     self.assertEqual(response.message, 'User do not exist.')
+    #     self.assertEqual(response.json['message'], 'User do not exist.')
 
     # def test_admin_delete_success(self):
     #     self.login('daisy@gmail.com', 'daisyPass')
