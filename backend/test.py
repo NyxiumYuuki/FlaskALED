@@ -2,11 +2,13 @@ import unittest
 from flask_testing import TestCase
 import json
 
-from fictive_users import TAB_USER
+from fictive_users import TAB_USER_WITH_PASSWORD, uwp_to_user
 
 from application import db, create_app
 from application.users_model import Users
 from application.logs_model import Logs
+
+
 
 
 class BaseTestCase(TestCase):
@@ -15,15 +17,19 @@ class BaseTestCase(TestCase):
         app = create_app('testing')
         return app
 
+
     def setUp(self):
         db.create_all()
-        for user in TAB_USER:
-            db.session.add(user)
+        for uwp in TAB_USER_WITH_PASSWORD:
+            db.session.add(uwp_to_user(uwp))   
         db.session.commit()
+
 
     def tearDown(self):
         db.session.remove()
         db.drop_all()
+
+
 
 
 class FlaskTestCase(BaseTestCase):
@@ -39,21 +45,46 @@ class FlaskTestCase(BaseTestCase):
 
     # --- LOGIN ---
 
-    # def test_login_no_fields(self):
-    #     data0 = {}
-    #     response = self.client.post('/api/login', json={})
-    #     print(response.json)
-    #     self.assertEqual(response.json['message'], 'Need email, password fields.')
+    def test_login_NoFields_statusCode(self):
+        data0 = {}
+        response = self.client.post('/api/login', json=data0)
+        self.assertEqual(response.status_code, 400)
 
-    # def test_login_empty_fields(self):
-    #     data0 = {
-    #         "email": "",
-    #         "password": "blabla"
-    #     }
-    #     response = self.client.post('/api/login', json=data0)
-    #     self.assertEqual(response.json['message'], 'Empty email and/or password fields.')
 
-    def test_login_wrong_fields(self):
+    def test_login_NoFields_message(self):
+        data0 = {}
+        response = self.client.post('/api/login', json=data0)
+        self.assertEqual(response.json['message'], 'Need email, password fields.')
+
+
+    def test_login_emptyFields_statusCode(self):
+        data0 = {
+            "email": "",
+            "password": "blabla"
+        }
+        response = self.client.post('/api/login', json=data0)
+        self.assertEqual(response.status_code, 400)
+
+
+    def test_login_emptyFields_message(self):
+        data0 = {
+            "email": "",
+            "password": "blabla"
+        }
+        response = self.client.post('/api/login', json=data0)
+        self.assertEqual(response.json['message'], 'Empty email and/or password fields.')
+
+
+    def test_login_wrongFields_statusCode(self):
+        data0 = {
+            "email": "nimp@gmail.com",
+            "password": "nimp"
+        }
+        response = self.client.post('/api/login', json=data0)
+        self.assertEqual(response.status_code, 404)
+
+
+    def test_login_wrongFields_message(self):
         data0 = {
             "email": "nimp@gmail.com",
             "password": "nimp"
@@ -61,7 +92,17 @@ class FlaskTestCase(BaseTestCase):
         response = self.client.post('/api/login', json=data0)
         self.assertEqual(response.json['message'], 'Email or password invalid')
 
-    def test_login_success(self):
+
+    def test_login_success_statusCode(self):
+        data0 = {
+            "email": "riri@gmail.com",
+            "password": "ririPass"
+        }
+        response = self.client.post('/api/login', json=data0)
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_login_success_message(self):
         data0 = {
             "email": "riri@gmail.com",
             "password": "ririPass"
@@ -69,30 +110,52 @@ class FlaskTestCase(BaseTestCase):
         response = self.client.post('/api/login', json=data0)
         self.assertEqual(response.json['message'], 'User authenticated.')
 
-    # # --- REGISTER ---
 
-    # def test_register_no_fields(self):
-    #     data0 = json.dumps({})
-    #     response = self.client.post('/api/register', data=data0)
-    #     self.assertIn('Need', response.message)
 
-    # def test_register_empty_fields(self):
-    #     data0 = json.dumps({
+    # --- REGISTER ---
+
+    # def test_register_noFields_statusCode(self):
+    #     data0 = {}
+    #     response = self.client.post('/api/register', json=data0)
+    #     self.assertEqual(response.status_code, 400)
+
+
+    # def test_register_noFields_message(self):
+    #     data0 = {}
+    #     response = self.client.post('/api/register', json=data0)
+    #     self.assertIn('Need', response.json['message'])
+
+
+    # def test_register_emptyFields_statusCode(self):
+    #     data0 = {
     #         "email": "",
     #         "password": "blabla",
     #         "nickname": "blabla"
-    #     })
-    #     response = self.client.post('/api/register', data=data0)
-    #     self.assertEqual(response.message, 'Empty email and/or password and/or nickname fields.')
+    #     }
+    #     response = self.client.post('/api/register', json=data0)
+    #     self.assertEqual(response.status_code, 400)
 
-    # def test_register_already_exist(self):
+
+    # def test_register_emptyFields_message(self):
+    #     data0 = {
+    #         "email": "",
+    #         "password": "blabla",
+    #         "nickname": "blabla"
+    #     }
+    #     response = self.client.post('/api/register', json=data0)
+    #     self.assertIn('Need', response.json['message'])
+
+
+    # def test_register_alreadyExist_statusCode(self):
     #     data0 = json.dumps({
     #         "email": "riri@gmail.com",
     #         "password": "blabla",
     #         "nickname": "blabla"
     #     })
-    #     response = self.client.post('/api/register', data=data0)
+    #     response = self.client.post('/api/register', json=data0)
     #     self.assertIn('already exist', response.message)
+
+
 
     # def test_register_success(self):
     #     data0 = json.dumps({
@@ -100,7 +163,7 @@ class FlaskTestCase(BaseTestCase):
     #         "password": "loulouPass",
     #         "nickname": "Loulou"
     #     })
-    #     response = self.client.post('/api/register', data=data0)
+    #     response = self.client.post('/api/register', json=data0)
     #     self.assertEqual(response.message, 'User registered.')
 
     # # --- LOGOUT ---

@@ -20,16 +20,16 @@ def create_app(flask_env='development'):
     if app.config['SQLALCHEMY_DATABASE_URI_1'] is None or app.config['SQLALCHEMY_DATABASE_URI_2'] is None:
         print('No ENV Variable for DATABASE_URL_USERS or DATABASE_URL_LOGS')
         sys.exit(1)
-    else:
-        print('ENV Variables passed : ', app.config['SQLALCHEMY_BINDS'])
+    #else:
+    #    print('ENV Variables passed : ', app.config['SQLALCHEMY_BINDS'])
 
     print('init_app')
     db.init_app(app)
     with app.app_context():
-        print('import routes')
+        #print('import routes')
         from . import routes
         app.register_blueprint(routes.bp)
-        print('db.create_all')
+        #print('db.create_all')
         db.create_all()
-        print('db created')
+        #print('db created')
     return app

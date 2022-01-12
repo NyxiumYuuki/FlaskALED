@@ -50,9 +50,3 @@ def uwp_to_user(uwp):
         salt = salt0,
         is_admin = uwp["is_admin"]
     )
-
-
-
-TAB_USER = []
-for uwp in TAB_USER_WITH_PASSWORD:
-    TAB_USER.append(uwp_to_user(uwp))
