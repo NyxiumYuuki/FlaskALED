@@ -28,6 +28,7 @@ import { PageRegistryComponent } from './user/page-registry/page-registry.compon
 import { PopupDeleteProfilComponent } from './common/components/popup-delete-profil/popup-delete-profil.component';
 import {MatSortModule} from "@angular/material/sort";
 import { PopupUpdatePersonAdminComponent } from './admin/userList/popup-update-person-admin/popup-update-person-admin.component';
+import {HttpClientModule} from "@angular/common/http";
 
 
 
@@ -51,6 +52,7 @@ import { PopupUpdatePersonAdminComponent } from './admin/userList/popup-update-p
         AppRoutingModule,
         FormsModule,
         BrowserAnimationsModule,
+        HttpClientModule,
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
