@@ -52,13 +52,19 @@ export class PopupCreatePersonComponent
     // Callback de 'onValider'
     onValiderCallback(retour: any)
     {
-        if(retour.status === 'error')
+        if(retour.status === 'success')
+        {
+            this.dialogRef.close(retour);
+        }
+        else if(retour.status === 'error')
         {
             console.log(retour);
-            this.dialogRef.close(null);
+            this.errorMessage = retour.message;
+            this.hasError = true;
         }
         else {
-            this.dialogRef.close(this.person);
+            console.log(retour);
+            this.dialogRef.close(null);
         }
     }
 

@@ -6,10 +6,16 @@ import { Injectable } from '@angular/core';
 export class ProfilService
 {
 
-    getId(): number | null
+    constructor()
+    {
+        this.setId(-1);
+        this.setIsAdmin(false);
+    }
+
+    getId(): number
     {
         let idString = localStorage.getItem('id');
-        if(idString === null) return null;
+        if(idString === null) return -1;
         else return parseInt(idString);
     }
 

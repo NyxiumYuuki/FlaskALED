@@ -29,7 +29,7 @@ export class MessageService
         return this.http.put<any>(urlComplete, data, {withCredentials: true});
     }
 
-    delete(url: string): Observable<any>
+    delete(url: string, params:HttpParams = new HttpParams()): Observable<any>
     {
         const urlComplete = environment.debutUrl + url ;
         return this.http.delete<any>(urlComplete,{withCredentials: true});

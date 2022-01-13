@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {CheckEmailService} from "../../services/checkEmail/check-email.service";
-import {HashageService} from "../../services/hashage/hashage.service";
+import {MessageService} from "../../services/message/message.service";
 
 
 
@@ -20,10 +20,10 @@ export class PopupUpdateProfilComponent implements OnInit
     errorMessage: string = "" ;
 
 
-    constructor( public dialogRef: MatDialogRef<PopupUpdateProfilComponent>,
-                 @Inject(MAT_DIALOG_DATA) public data: any,
-                 private checkEmailService: CheckEmailService,
-                 private hashageService: HashageService ) { }
+    constructor( private checkEmailService: CheckEmailService,
+                 private messageService: MessageService,
+                 public dialogRef: MatDialogRef<PopupUpdateProfilComponent>,
+                 @Inject(MAT_DIALOG_DATA) public data: any ) { }
 
 
     ngOnInit(): void
@@ -33,7 +33,6 @@ export class PopupUpdateProfilComponent implements OnInit
             id: person.id,
             nickname: person.nickname,
             email: person.email,
-            hash_pass: person.hash_pass,
             is_admin: person.is_admin
         };
     }
@@ -45,13 +44,14 @@ export class PopupUpdateProfilComponent implements OnInit
         this.checkField();
         if(!this.hasError)
         {
-            if(this.changePassword) this.personCopy.hash_pass = this.hashageService.run(this.newPassword);
-            const data = { user: this.personCopy };
-
-            // ...
-
-            // Faux code
-            this.onValiderCallback({ status: "success"});
+            let data: any = {nickname: this.personCopy.nickname};
+            if(this.changePassword) data = {
+                nickname: this.personCopy.nickname,
+                password: this.newPassword
+            };
+            this.messageService
+                .put("user/update", data)
+                .subscribe(ret => this.onValiderCallback(ret), err => this.onValiderCallback(err));
         }
     }
 
@@ -59,14 +59,19 @@ export class PopupUpdateProfilComponent implements OnInit
     // Callback de 'onValider'
     onValiderCallback(retour: any)
     {
-        if(retour.status === 'error')
+        if(retour.status === "success")
+        {
+            this.dialogRef.close(retour);
+        }
+        else if(retour.status === "error")
         {
             console.log(retour);
-            this.dialogRef.close(null);
+            this.errorMessage = retour.message;
+            this.hasError = true;
         }
-        else
-        {
-            this.dialogRef.close(this.personCopy);
+        else {
+            console.log(retour);
+            this.dialogRef.close(null);
         }
     }
 
