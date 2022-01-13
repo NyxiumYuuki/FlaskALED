@@ -44,6 +44,7 @@ class FlaskTestCase(BaseTestCase):
         response = self.client.post('/api/login', json=data0)
         return response
 
+
     # --- LOGIN ---
 
     # def test_login_NoFields_statusCode(self):
@@ -112,18 +113,15 @@ class FlaskTestCase(BaseTestCase):
     #     self.assertEqual(response.json['message'], 'User authenticated.')
 
 
-
     # --- REGISTER ---
 
     # def test_register_noFields_statusCode(self):
-    #     data0 = {}
-    #     response = self.client.post('/api/register', json=data0)
+    #     response = self.client.post('/api/register', json={})
     #     self.assertEqual(response.status_code, 400)
 
 
     # def test_register_noFields_message(self):
-    #     data0 = {}
-    #     response = self.client.post('/api/register', json=data0)
+    #     response = self.client.post('/api/register', json={})
     #     self.assertIn('Need', response.json['message'])
 
 
@@ -602,102 +600,109 @@ class FlaskTestCase(BaseTestCase):
 
     # # --- admin: DELETE USER ---
 
-    def test_adminDelete_notConnected_statusCode(self):
-        response = self.client.delete('/api/admin/delete/user')
+    # def test_adminDelete_notConnected_statusCode(self):
+    #     response = self.client.delete('/api/admin/delete/user')
+    #     self.assertEqual(response.status_code, 500)
+
+
+    # def test_adminDelete_notConnected_message(self):
+    #     response = self.client.delete('/api/admin/delete/user')
+    #     self.assertEqual(response.json['message'], 'User not authenticated.')
+
+
+    # def test_adminDelete_noPermission_statusCode(self):
+    #     response = self.login('riri@gmail.com', 'ririPass')
+    #     if response.status_code == 200:
+    #         response = self.client.delete('/api/admin/delete/user')
+    #         self.assertEqual(response.status_code, 500)
+    #     else:
+    #         self.assertEqual(True, False)
+
+
+    # def test_adminDelete_noPermission_message(self):
+    #     response = self.login('riri@gmail.com', 'ririPass')
+    #     if response.status_code == 200:
+    #         response = self.client.delete('/api/admin/delete/user')
+    #         self.assertEqual(response.json['message'], 'User does not have permission.')
+    #     else:
+    #         self.assertEqual(True, False)
+
+
+    # def test_adminDelete_noFields_statusCode(self):
+    #     response = self.login('daisy@gmail.com', 'daisyPass')
+    #     if response.status_code == 200:
+    #         response = self.client.delete('/api/admin/delete/user', json={})
+    #         self.assertEqual(response.status_code, 400)
+    #     else:
+    #         self.assertEqual(True, False)
+
+
+    # def test_adminDelete_no_fields(self):
+    #     response = self.login('daisy@gmail.com', 'daisyPass')
+    #     if response.status_code == 200:
+    #         response = self.client.delete('/api/admin/delete/user', json={})
+    #         self.assertIn('Need', response.json['message'])
+    #     else:
+    #         self.assertEqual(True, False)
+
+
+    # def test_adminDelete_notExists_statusCode(self):
+    #     response = self.login('daisy@gmail.com', 'daisyPass')
+    #     if response.status_code == 200:
+    #         data0 = {"id": 99}
+    #         response = self.client.delete('/api/admin/delete/user', json=data0)
+    #         self.assertEqual(response.status_code, 500)
+    #     else:
+    #         self.assertEqual(True, False)
+
+
+    # def test_adminDelete_notExists_message(self):
+    #     response = self.login('daisy@gmail.com', 'daisyPass')
+    #     if response.status_code == 200:
+    #         data0 = {"id": 99}
+    #         response = self.client.delete('/api/admin/delete/user', json=data0)
+    #         self.assertEqual(response.json['message'], 'User do not exist.')
+    #     else:
+    #         self.assertEqual(True, False)
+
+
+    # def test_adminDelete_success_statusCode(self):
+    #     response = self.login('daisy@gmail.com', 'daisyPass')
+    #     if response.status_code == 200:
+    #         data0 = {"id": 2}
+    #         response = self.client.delete('/api/admin/delete/user', json=data0)
+    #         self.assertEqual(response.status_code, 200)
+    #     else:
+    #         self.assertEqual(True, False)
+
+
+    # def test_adminDelete_success_message(self):
+    #     response = self.login('daisy@gmail.com', 'daisyPass')
+    #     if response.status_code == 200:
+    #         data0 = {"id": 2}
+    #         response = self.client.delete('/api/admin/delete/user', json=data0)
+    #         self.assertEqual(response.json['message'], 'User deleted.')
+    #     else:
+    #         self.assertEqual(True, False)
+
+
+    # # --- LIST OF USER ---
+
+    def test_listOfUsers_fail(self):
+        response = self.client.get('/api/users')
         self.assertEqual(response.status_code, 500)
 
 
-    def test_adminDelete_notConnected_message(self):
-        response = self.client.delete('/api/admin/delete/user')
-        self.assertEqual(response.json['message'], 'User not authenticated.')
-
-
-    def test_adminDelete_noPermission_statusCode(self):
+    def test_listOfUsers_success(self):
         response = self.login('riri@gmail.com', 'ririPass')
         if response.status_code == 200:
-            response = self.client.delete('/api/admin/delete/user')
-            self.assertEqual(response.status_code, 500)
-        else:
-            self.assertEqual(True, False)
-
-
-    def test_adminDelete_noPermission_message(self):
-        response = self.login('riri@gmail.com', 'ririPass')
-        if response.status_code == 200:
-            response = self.client.delete('/api/admin/delete/user')
-            self.assertEqual(response.json['message'], 'User does not have permission.')
-        else:
-            self.assertEqual(True, False)
-
-
-    def test_adminDelete_noFields_statusCode(self):
-        response = self.login('daisy@gmail.com', 'daisyPass')
-        if response.status_code == 200:
-            response = self.client.delete('/api/admin/delete/user', json={})
-            self.assertEqual(response.status_code, 400)
-        else:
-            self.assertEqual(True, False)
-
-
-    def test_adminDelete_no_fields(self):
-        response = self.login('daisy@gmail.com', 'daisyPass')
-        if response.status_code == 200:
-            response = self.client.delete('/api/admin/delete/user', json={})
-            self.assertIn('Need', response.json['message'])
-        else:
-            self.assertEqual(True, False)
-
-
-    def test_adminDelete_notExists_statusCode(self):
-        response = self.login('daisy@gmail.com', 'daisyPass')
-        if response.status_code == 200:
-            data0 = {"id": 99}
-            response = self.client.delete('/api/admin/delete/user', json=data0)
-            self.assertEqual(response.status_code, 500)
-        else:
-            self.assertEqual(True, False)
-
-
-    def test_adminDelete_notExists_message(self):
-        response = self.login('daisy@gmail.com', 'daisyPass')
-        if response.status_code == 200:
-            data0 = {"id": 99}
-            response = self.client.delete('/api/admin/delete/user', json=data0)
-            self.assertEqual(response.json['message'], 'User do not exist.')
-        else:
-            self.assertEqual(True, False)
-
-
-    def test_adminDelete_success_statusCode(self):
-        response = self.login('daisy@gmail.com', 'daisyPass')
-        if response.status_code == 200:
-            data0 = {"id": 2}
-            response = self.client.delete('/api/admin/delete/user', json=data0)
+            response = self.client.get('/api/users?order_by=nickname')
+            print(response.json["data"])
             self.assertEqual(response.status_code, 200)
         else:
             self.assertEqual(True, False)
 
 
-    def test_adminDelete_success_message(self):
-        response = self.login('daisy@gmail.com', 'daisyPass')
-        if response.status_code == 200:
-            data0 = {"id": 2}
-            response = self.client.delete('/api/admin/delete/user', json=data0)
-            self.assertEqual(response.json['message'], 'User deleted.')
-        else:
-            self.assertEqual(True, False)
-
-
-    # # --- LIST OF USER ---
-
-    # def test_list_of_users_fail(self):
-    #     response = self.client.get('/api/users')
-    #     self.assertEqual(response.status_code, 500)
-
-    # def test_list_of_users_success(self):
-    #     self.login('riri@gmail.com', 'ririPass')
-    #     response = self.client.get('/api/users')
-    #     self.assertEqual(response.status_code, 200)
 
 
 if __name__ == '__main__':
