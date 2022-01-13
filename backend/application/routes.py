@@ -1,10 +1,12 @@
 from flask import request, Blueprint
+from flask_cors import CORS
 from .responses import send_message, send_error
 from .api_functions import db_login, db_register, db_user_update, db_create_log, db_user_delete, db_admin_update_user, \
     db_users
 from .sessionJWT import create_auth_token, check_auth_token
 
 bp = Blueprint('myapp', __name__)
+CORS(bp, supports_credentials=True, origins=['http://127.0.0.1:4200', 'http://localhost:4200'])
 
 
 # Login
@@ -117,13 +119,13 @@ def user_delete():
         ip = request.remote_addr
         user_id = token['payload']['id']
         res = db_user_delete(ip, user_id)
-        if res['status'] == 1:
+        if res['status'] != 0:
             return send_error(500, res['message'])
-        elif res['status'] == 0:
+        else:
             db_create_log(
                 ip=ip,
-                action='logout',
-                message='User disconnected.',
+                action='delete',
+                message='User deleted.',
                 has_succeeded=True,
                 status_code=0,
                 table='users',
@@ -269,15 +271,15 @@ def admin_update_user():
 
 
 # Admin : Delete User
-@bp.route('/api/admin/delete/user', methods=['DELETE'])
-def admin_delete_user():
+@bp.route('/api/admin/delete/user/<id>', methods=['DELETE'])
+def admin_delete_user(id):
     token = check_auth_token(request)
     if token['success']:
         ip = request.remote_addr
         user_id = token['payload']['id']
         is_admin = token['payload']['is_admin']
         if is_admin:
-            post_json = request.json
+            post_json = {'id': id}
             post_user_id_delete = None
             fields = ''
             if 'id' in post_json:

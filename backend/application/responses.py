@@ -12,7 +12,6 @@ def send_error(status_code, message, token=None):
         status=status_code,
         mimetype='application/json'
     )
-    res.headers['Access-Control-Allow-Origin'] = app.config.get('ALLOW_ORIGIN')
     if token is not None:
         res.set_cookie('SESSIONID', token)
     return res
@@ -29,7 +28,6 @@ def send_message(message, data, token=None, token_delete=False):
         status=200,
         mimetype='application/json'
     )
-    res.headers['Access-Control-Allow-Origin'] = app.config.get('ALLOW_ORIGIN')
     if token is not None:
         res.set_cookie('SESSIONID', token)
     if token_delete:
