@@ -1,8 +1,7 @@
 import {Component} from '@angular/core';
 import {Router} from "@angular/router";
 import {MessageService} from "../../common/services/message/message.service";
-import {HashageService} from "../../common/services/hashage/hashage.service";
-import {environment} from "../../../environments/environment";
+import {ProfilService} from "../../common/services/profil/profil.service";
 
 
 
@@ -21,40 +20,40 @@ export class PageLoginComponent
 
     constructor( private messageService: MessageService,
                  private router: Router,
-                 private hashageService: HashageService ) { }
+                 private profilService: ProfilService ) { }
 
 
     // Appuie sur le bouton "seConnecter"
     onSeConnecter(): void
     {
-        console.log("test env: "+environment.api_url);
         this.checkField();
         if(!this.hasError)
         {
-            let data = {
+            const data = {
                 email: this.email,
-                hash_pass: this.hashageService.run(this.password)
+                password: this.password
             };
-            console.log(data);
-            /*
             this.messageService
-                .sendMessage('user/auth', data)
-                .subscribe( retour => this.callbackSeConnecter(retour))
-            */
+                .post('login', data)
+                .subscribe( retour => this.onSeConnecterCallback(retour), err => this.onSeConnecterCallback(err));
         }
     }
 
 
     // Callback de "onSeConnecter"
-    callbackSeConnecter(retour: any): void
+    onSeConnecterCallback(retour: any): void
     {
-        if(retour.status !== 200)
+        if(retour.status !== "success")
         {
-            this.errorMessage = retour.error.data.reason;
+            console.log(retour);
+            this.errorMessage = retour.message;
             this.hasError = true;
         }
         else {
-            //this.router.navigateByUrl( '/search' );
+            this.profilService.setId(retour.data.id);
+            this.profilService.setIsAdmin(retour.data.is_admin)
+            if(retour.data.is_admin) this.router.navigateByUrl('admin/userList');
+            else this.router.navigateByUrl('user/userList');
         }
     }
 

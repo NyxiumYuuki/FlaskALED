@@ -4,6 +4,7 @@ import {Router} from "@angular/router";
 import {CheckEmailService} from "../../common/services/checkEmail/check-email.service";
 import {MatDialog} from "@angular/material/dialog";
 import {PopupConfirmRegisterComponent} from "../popup-confirm-register/popup-confirm-register.component";
+import {MessageService} from "../../common/services/message/message.service";
 
 
 
@@ -27,8 +28,8 @@ export class PageRegisterComponent
     errorMessage: string = "";
 
 
-    constructor( private hashageService: HashageService,
-                 private checkEmailService: CheckEmailService,
+    constructor( private checkEmailService: CheckEmailService,
+                 private messageService: MessageService,
                  private router: Router,
                  public dialog: MatDialog ) { }
 
@@ -39,18 +40,14 @@ export class PageRegisterComponent
         this.checkField();
         if(!this.hasError)
         {
-            this.person.hash_pass = this.hashageService.run(this.password);
-
-            // FAUX CODE
-            const retour = { status: "succes", data: {} };
-            this.onValiderCallback(retour);
-
-            // VRAI CODE
-            /*
+            const data = {
+                email: this.person.email,
+                nickname: this.person.nickname,
+                is_admin: false
+            };
             this.messageService
-                .sendMessage('register', this.user)
-                .subscribe(retour => this.onValiderCallback(retour));
-            */
+                .post('register', data)
+                .subscribe( retour => this.onValiderCallback(retour), err => this.onValiderCallback(err));
         }
     }
 
@@ -58,16 +55,17 @@ export class PageRegisterComponent
     // Callback de "onValider"
     onValiderCallback(retour: any): void
     {
-        if(retour.status === "error")
+        if(retour.status !== "success")
         {
             console.log(retour);
+            this.errorMessage = retour.message;
+            this.hasError = true;
         }
-        else
-        {
+        else {
             this.dialog
                 .open(PopupConfirmRegisterComponent, {})
                 .afterClosed()
-                .subscribe(retour => this.router.navigateByUrl("/"));
+                .subscribe(retour => this.router.navigateByUrl("/login"));
         }
     }
 

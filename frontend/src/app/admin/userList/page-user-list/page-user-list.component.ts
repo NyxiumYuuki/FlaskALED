@@ -1,6 +1,5 @@
 import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
-import {FictitiousDatasService} from "../../../common/services/fictitiousDatas/fictitious-datas.service";
 import {MatSort} from "@angular/material/sort";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatDialog} from "@angular/material/dialog";
@@ -8,6 +7,7 @@ import {PopupCreatePersonComponent} from "../popup-create-person/popup-create-pe
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {PopupUpdatePersonAdminComponent} from "../popup-update-person-admin/popup-update-person-admin.component";
 import {PopupDeleteProfilComponent} from "../../../common/components/popup-delete-profil/popup-delete-profil.component";
+import {MessageService} from "../../../common/services/message/message.service";
 
 
 
@@ -25,24 +25,34 @@ export class PageUserListComponent implements AfterViewInit
     configSnackBar = { duration: 2000, panelClass: "custom-class" };
 
 
-    constructor( private fictitiousDatasService: FictitiousDatasService,
+    constructor( private messageService: MessageService,
                  public dialog: MatDialog,
                  private snackBar: MatSnackBar) { }
 
 
     ngAfterViewInit(): void
     {
-        // Faux code
-        let tabPerson = this.fictitiousDatasService.getTabPerson(5);
+        this.messageService
+            .get('users?order_by=nickname')
+            .subscribe(retour => this.ngAfterViewInitCallback(retour), err => this.ngAfterViewInitCallback(err));
+    }
 
-        // Vrai code ...
-        tabPerson = tabPerson.map( person => {
-            if(!person.is_admin) return Object.assign(person, {role: "utilisateur"});
-            else return Object.assign(person, {role: "admin"});
-        });
-        this.dataSource = new MatTableDataSource(tabPerson);
-        this.dataSource.sort = this.sort;
-        this.dataSource.paginator = this.paginator;
+
+    ngAfterViewInitCallback(retour: any): void
+    {
+        if(retour.status !== "success") {
+            console.log(retour);
+        }
+        else {
+            let tabPerson: { id: number, email: string, nickname: string, is_admin: boolean }[] = retour.data;
+            tabPerson = tabPerson.map( person => {
+                if(!person.is_admin) return Object.assign(person, {role: "utilisateur"});
+                else return Object.assign(person, {role: "admin"});
+            });
+            this.dataSource = new MatTableDataSource(tabPerson);
+            this.dataSource.sort = this.sort;
+            this.dataSource.paginator = this.paginator;
+        }
     }
 
 
@@ -53,20 +63,21 @@ export class PageUserListComponent implements AfterViewInit
     }
 
 
-    // Appuie sur le bouton "add"
-    onAdd(): void
+    // Appuie sur le bouton "create"
+    onCreate(): void
     {
         const config = { width: '50%' };
         this.dialog
             .open(PopupCreatePersonComponent, config)
             .afterClosed()
-            .subscribe( person => {
+            .subscribe( retour => {
 
-                if((person === null) || (person === undefined)) {
+                if((retour === null) || (retour === undefined))
+                {
                     this.snackBar.open( "Opération annulée", "", this.configSnackBar);
                 }
                 else {
-                    this.dataSource.data.push(person);
+                    this.dataSource.data.push(retour.data);
                     this.dataSource.data = this.dataSource.data;
                     this.dataSource = this.dataSource;
                     this.snackBar.open( "L'utilisateur a bien été créé ✔", "", this.configSnackBar);
@@ -85,17 +96,18 @@ export class PageUserListComponent implements AfterViewInit
         this.dialog
             .open(PopupUpdatePersonAdminComponent, config)
             .afterClosed()
-            .subscribe( personUpdated => {
+            .subscribe( retour => {
 
-                if((personUpdated === null) || (personUpdated === undefined)) {
-                    this.snackBar.open( "Opération annulée", "", this.configSnackBar);
+                if((retour === null) || (retour === undefined))
+                {
+                    this.snackBar.open("Opération annulée", "", this.configSnackBar);
                 }
                 else {
                     const index = this.dataSource.data.findIndex( elt => (elt.id === personToUpdate.id));
-                    this.dataSource.data.splice(index, 1, personUpdated);
+                    this.dataSource.data.splice(index, 1, retour.data);
                     this.dataSource.data = this.dataSource.data;
                     this.dataSource = this.dataSource;
-                    this.snackBar.open( "L'utilisateur a bien été modifié ✔", "", this.configSnackBar);
+                    this.snackBar.open("L'utilisateur a bien été modifié ✔", "", this.configSnackBar);
                 }
 
             });
@@ -115,19 +127,23 @@ export class PageUserListComponent implements AfterViewInit
         this.dialog
             .open(PopupDeleteProfilComponent, config)
             .afterClosed()
-            .subscribe( personUpdated => {
+            .subscribe( retour => {
 
-                if((personUpdated === null) || (personUpdated === undefined)) {
-                    this.snackBar.open( "Opération annulée", "", this.configSnackBar);
+                if((retour === null) || (retour === undefined))
+                {
+                    this.snackBar.open("Opération annulée", "", this.configSnackBar);
+                }
+                else if(retour.status === "error")
+                {
+                    this.snackBar.open(retour.message, "", this.configSnackBar);
                 }
                 else {
                     const index = this.dataSource.data.findIndex( elt => (elt.id === personToDelete.id));
                     this.dataSource.data.splice(index, 1);
                     this.dataSource.data = this.dataSource.data;
                     this.dataSource = this.dataSource;
-                    this.snackBar.open( "L'utilisateur a bien été supprimé ✔", "", this.configSnackBar);
+                    this.snackBar.open("L'utilisateur a bien été supprimé ✔", "", this.configSnackBar);
                 }
-
             });
     }
 

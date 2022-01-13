@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {PopupUpdateProfilComponent} from "../popup-update-profil/popup-update-profil.component";
-import {FictitiousDatasService} from "../../services/fictitiousDatas/fictitious-datas.service";
 import {Router} from "@angular/router";
 import {PopupDeleteProfilComponent} from "../popup-delete-profil/popup-delete-profil.component";
+import {MessageService} from "../../services/message/message.service";
+import {HttpParams} from "@angular/common/http";
+import {ProfilService} from "../../services/profil/profil.service";
 
 
 
@@ -19,31 +21,42 @@ export class PageProfilComponent implements OnInit
         id: "",
         nickname: "",
         email: "",
-        hash_pass: "",
         is_admin: false,
     };
     from: string = "" ;
+    configSnackbar = { duration: 3000, panelClass: "custom-class" };
 
 
-    constructor( public dialog: MatDialog,
+    constructor( private messageService: MessageService,
+                 private profilService: ProfilService,
+                 public dialog: MatDialog,
                  private snackBar: MatSnackBar,
-                 private fictitiousDatasService: FictitiousDatasService,
                  private router: Router ) { }
 
 
     ngOnInit(): void
     {
-        // faux code
-        if(this.router.url.startsWith("/user")) {
-            this.person = this.fictitiousDatasService.getUser();
-            this.from = "user" ;
-        }
-        else if(this.router.url.startsWith("/admin")){
-            this.person = this.fictitiousDatasService.getAdmin();
-            this.from = "admin" ;
-        }
+        if(this.router.url.startsWith("/user")) this.from = "user" ;
+        else if(this.router.url.startsWith("/admin")) this.from = "admin" ;
 
-        // Vrai code ...
+        let params = new HttpParams()
+        params = params.set("order", "");
+        params = params.set("id", this.profilService.getId());
+        this.messageService
+            .get("user", params)
+            .subscribe(ret => this.ngOnInitCallback(ret), err => this.ngOnInitCallback(err));
+    }
+
+
+    // Callback de ngOnInit
+    ngOnInitCallback(retour: any): void
+    {
+        if(retour.status !== "success") {
+            console.log(retour);
+        }
+        else {
+            this.person = retour.data[0];
+        }
     }
 
 
@@ -64,15 +77,8 @@ export class PageProfilComponent implements OnInit
     // Callback de onModifier
     onModifierCallback(retour: any): void
     {
-        if((retour === null) || (retour === undefined))
-        {
-            const config = { duration: 1000, panelClass: "custom-class" };
-            this.snackBar.open( "Opération annulé", "", config);
-        }
-        else
-        {
-            this.person = retour;
-        }
+        if((retour === null) || (retour === undefined)) this.snackBar.open( "Opération annulé", "", this.configSnackbar);
+        else if(retour.status === "success") this.person = retour.data;
     }
 
 
@@ -96,15 +102,9 @@ export class PageProfilComponent implements OnInit
     // Callback de onSupprimer
     onSupprimerCallback(retour: any): void
     {
-        if((retour === null) || (retour === undefined))
-        {
-            const config = { duration: 1000, panelClass: "custom-class" };
-            this.snackBar.open( "Opération annulé", "", config);
-        }
-        else
-        {
-            this.router.navigateByUrl("/login");
-        }
+        if((retour === null) || (retour === undefined)) this.snackBar.open( "Opération annulé", "", this.configSnackbar);
+        else if(retour.status === "error") this.snackBar.open(retour.message, "", this.configSnackbar);
+        else if(retour.status === "success") this.router.navigateByUrl("/login");
     }
 
 }
