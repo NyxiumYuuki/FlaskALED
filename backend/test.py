@@ -334,188 +334,274 @@ class FlaskTestCase(BaseTestCase):
 
     # # --- admin: CREATE USER ---
 
-    def test_adminCreate_notConnected_statusCode(self):
-        response = self.client.post('/api/admin/create/user', json={})
+    # def test_adminCreate_notConnected_statusCode(self):
+    #     response = self.client.post('/api/admin/create/user', json={})
+    #     self.assertEqual(response.status_code, 500)
+
+
+    # def test_adminCreate_notConnected_message(self):
+    #     response = self.client.post('/api/admin/create/user', json={})
+    #     self.assertEqual(response.json['message'], 'User not authenticated.')
+
+
+    # def test_adminCreate_noPermission_statusCode(self):
+    #     response = self.login('riri@gmail.com', 'ririPass')
+    #     if response.status_code == 200:
+    #         response = self.client.post('/api/admin/create/user', json={})
+    #         self.assertEqual(response.status_code, 500)
+    #     else:
+    #         self.assertEqual(True, False)
+
+
+    # def test_adminCreate_noPermission_message(self):
+    #     response = self.login('riri@gmail.com', 'ririPass')
+    #     if response.status_code == 200:
+    #         response = self.client.post('/api/admin/create/user', json={})
+    #         self.assertEqual(response.json['message'], 'User does not have permission.')
+    #     else:
+    #         self.assertEqual(True, False)
+
+
+    # def test_adminCreate_noFields_statusCode(self):
+    #     response = self.login('daisy@gmail.com', 'daisyPass')
+    #     if response.status_code == 200:
+    #         response = self.client.post('/api/admin/create/user', json={})
+    #         self.assertEqual(response.status_code, 400)
+    #     else:
+    #         self.assertEqual(True, False)
+
+
+    # def test_adminCreate_noFields_message(self):
+    #     response = self.login('daisy@gmail.com', 'daisyPass')
+    #     if response.status_code == 200:
+    #         response = self.client.post('/api/admin/create/user', json={})
+    #         self.assertIn('Need', response.json['message'])
+    #     else:
+    #         self.assertEqual(True, False)
+
+
+    # def test_adminCreate_emptyFields_statusCode(self):
+    #     response = self.login('daisy@gmail.com', 'daisyPass')
+    #     if response.status_code == 200:
+    #         data0 = {
+    #             "email": "",
+    #             "nickname": "Mickey",
+    #             "password": "mickeyPass",
+    #             "is_admin": True, 
+    #         }
+    #         response = self.client.post('/api/admin/create/user', json=data0)
+    #         self.assertEqual(response.status_code, 400)
+    #     else:
+    #         self.assertEqual(True, False)
+
+
+    # def test_adminCreate_emptyFields_message(self):
+    #     response = self.login('daisy@gmail.com', 'daisyPass')
+    #     if response.status_code == 200:
+    #         data0 = {
+    #             "email": "",
+    #             "nickname": "Mickey",
+    #             "password": "mickeyPass",
+    #             "is_admin": True, 
+    #         }
+    #         response = self.client.post('/api/admin/create/user', json=data0)
+    #         self.assertEqual(response.json['message'], 'Empty email and/or nickname and/or password and/or is_admin fields.')
+    #     else:
+    #         self.assertEqual(True, False)
+
+
+    # def test_adminCreate_alreadyExist_statusCode(self):
+    #     response = self.login('daisy@gmail.com', 'daisyPass')
+    #     if response.status_code == 200:
+    #         data0 = {
+    #             "email": "riri@gmail.com",
+    #             "passord": "blabla",
+    #             "nickname": "blabla",
+    #         }
+    #         response = self.client.post('/api/admin/create/user', json=data0)
+    #         self.assertEqual(response.status_code, 500)
+    #     else:
+    #         self.assertEqual(True, False)
+
+
+    # def test_adminCreate_alreadyExist_message(self):
+    #     response = self.login('daisy@gmail.com', 'daisyPass')
+    #     if response.status_code == 200:
+    #         data0 = {
+    #             "email": "riri@gmail.com",
+    #             "passord": "blabla",
+    #             "nickname": "blabla",
+    #         }
+    #         response = self.client.post('/api/admin/create/user', json=data0)
+    #         self.assertIn('already exist', response.json['message'])
+    #     else:
+    #         self.assertEqual(True, False)
+
+
+    # def test_adminCreate_success_statusCode(self):
+    #     response = self.login('daisy@gmail.com', 'daisyPass')
+    #     if response.status_code == 200:
+    #         data0 = {
+    #             "email": "mickey@gmail.com",
+    #             "nickname": "Mickey",
+    #             "password": "mickeyPass",
+    #             "is_admin": True, 
+    #         }
+    #         response = self.client.post('/api/admin/create/user', json=data0)
+    #         self.assertEqual(response.status_code, 200)
+    #     else:
+    #         self.assertEqual(True, False)
+
+
+    # def test_adminCreate_success_message(self):
+    #     response = self.login('daisy@gmail.com', 'daisyPass')
+    #     if response.status_code == 200:
+    #         data0 = {
+    #             "email": "mickey@gmail.com",
+    #             "nickname": "Mickey",
+    #             "password": "mickeyPass",
+    #             "is_admin": True, 
+    #         }
+    #         response = self.client.post('/api/admin/create/user', json=data0)
+    #         self.assertEqual(response.json['message'], 'User registered.')
+    #     else:
+    #         self.assertEqual(True, False)
+
+
+    # # --- admin: UPDATE USER ---
+
+    def test_adminUpdate_notConnected_statusCode(self):
+        response = self.client.put('/api/admin/update/user', json={})
         self.assertEqual(response.status_code, 500)
 
 
-    def test_adminCreate_notConnected_message(self):
-        response = self.client.post('/api/admin/create/user', json={})
+    def test_adminUpdate_notConnected_message(self):
+        response = self.client.put('/api/admin/update/user', json={})
         self.assertEqual(response.json['message'], 'User not authenticated.')
 
 
-    def test_adminCreate_noPermission_statusCode(self):
+    def test_adminUpdate_noPermission_statusCode(self):
         response = self.login('riri@gmail.com', 'ririPass')
         if response.status_code == 200:
-            response = self.client.post('/api/admin/create/user', json={})
+            response = self.client.put('/api/admin/update/user', json={})
             self.assertEqual(response.status_code, 500)
         else:
             self.assertEqual(True, False)
 
 
-    def test_adminCreate_noPermission_message(self):
+    def test_adminUpdate_noPermission_message(self):
         response = self.login('riri@gmail.com', 'ririPass')
         if response.status_code == 200:
-            response = self.client.post('/api/admin/create/user', json={})
+            response = self.client.put('/api/admin/update/user', json={})
             self.assertEqual(response.json['message'], 'User does not have permission.')
         else:
             self.assertEqual(True, False)
 
 
-    def test_adminCreate_noFields_statusCode(self):
+    def test_adminUpdate_noFields_statusCode(self):
         response = self.login('daisy@gmail.com', 'daisyPass')
         if response.status_code == 200:
-            response = self.client.post('/api/admin/create/user', json={})
+            response = self.client.put('/api/admin/update/user', json={})
             self.assertEqual(response.status_code, 400)
         else:
             self.assertEqual(True, False)
 
 
-    def test_adminCreate_noFields_message(self):
+    def test_adminUpdate_noFields_message(self):
         response = self.login('daisy@gmail.com', 'daisyPass')
         if response.status_code == 200:
-            response = self.client.post('/api/admin/create/user', json={})
+            response = self.client.put('/api/admin/update/user', json={})
             self.assertIn('Need', response.json['message'])
         else:
             self.assertEqual(True, False)
 
 
-    def test_adminCreate_emptyFields_statusCode(self):
+    def test_adminUpdate_emptyFields_statusCode(self):
         response = self.login('daisy@gmail.com', 'daisyPass')
         if response.status_code == 200:
             data0 = {
-                "email": "",
-                "nickname": "Mickey",
-                "password": "mickeyPass",
-                "is_admin": True, 
+                "id": 1,
+                "password": "",
+                "is_admin": False,
             }
-            response = self.client.post('/api/admin/create/user', json=data0)
+            response = self.client.put('/api/admin/update/user', json=data0)
             self.assertEqual(response.status_code, 400)
         else:
             self.assertEqual(True, False)
 
 
-    def test_adminCreate_emptyFields_message(self):
+    def test_adminUpdate_emptyFields_message(self):
         response = self.login('daisy@gmail.com', 'daisyPass')
         if response.status_code == 200:
             data0 = {
-                "email": "",
-                "nickname": "Mickey",
-                "password": "mickeyPass",
-                "is_admin": True, 
+                "id": 1,
+                "password": "",
+                "is_admin": False,
             }
-            response = self.client.post('/api/admin/create/user', json=data0)
-            self.assertEqual(response.json['message'], 'Empty email and/or nickname and/or password and/or is_admin fields.')
+            response = self.client.put('/api/admin/update/user', json=data0)
+            self.assertEqual(response.json['message'], 'Empty is_admin and/or password fields.')
         else:
             self.assertEqual(True, False)
 
 
-    def test_adminCreate_alreadyExist_statusCode(self):
+    def test_adminUpdate_notExists_statusCode(self):
         response = self.login('daisy@gmail.com', 'daisyPass')
         if response.status_code == 200:
             data0 = {
-                "email": "riri@gmail.com",
-                "passord": "blabla",
-                "nickname": "blabla",
+                "id": 99,
+                "password": "blabla",
+                "is_admin": False
             }
-            response = self.client.post('/api/admin/create/user', json=data0)
+            response = self.client.put('/api/admin/update/user', json=data0)
             self.assertEqual(response.status_code, 500)
         else:
-            self.assertEqual(True, False)
+            self.assertEqual(True, False)            
 
 
-    def test_adminCreate_alreadyExist_message(self):
+    def test_adminUpdate_notExists_message(self):
         response = self.login('daisy@gmail.com', 'daisyPass')
         if response.status_code == 200:
             data0 = {
-                "email": "riri@gmail.com",
-                "passord": "blabla",
-                "nickname": "blabla",
+                "id": 99,
+                "password": "blabla",
+                "is_admin": False
             }
-            response = self.client.post('/api/admin/create/user', json=data0)
-            self.assertIn('already exist', response.json['message'])
+            response = self.client.put('/api/admin/update/user', json=data0)
+            self.assertEqual(response.json['message'], 'User do not exist.')
         else:
-            self.assertEqual(True, False)
+            self.assertEqual(True, False)      
 
 
-    def test_adminCreate_success_statusCode(self):
+    def test_adminUpdate_success_message(self):
         response = self.login('daisy@gmail.com', 'daisyPass')
         if response.status_code == 200:
             data0 = {
-                "email": "mickey@gmail.com",
-                "nickname": "Mickey",
-                "password": "mickeyPass",
-                "is_admin": True, 
+                "id": 1,
+                "password": "roroPass",
+                "is_admin": False, 
             }
-            response = self.client.post('/api/admin/create/user', json=data0)
+            response = self.client.put('/api/admin/update/user', json=data0)
             self.assertEqual(response.status_code, 200)
         else:
             self.assertEqual(True, False)
 
 
-    def test_adminCreate_success_message(self):
+    def test_adminUpdate_success_statusCode(self):
         response = self.login('daisy@gmail.com', 'daisyPass')
         if response.status_code == 200:
             data0 = {
-                "email": "mickey@gmail.com",
-                "nickname": "Mickey",
-                "password": "mickeyPass",
-                "is_admin": True, 
+                "id": 1,
+                "password": "roroPass",
+                "is_admin": False, 
             }
-            response = self.client.post('/api/admin/create/user', json=data0)
-            self.assertEqual(response.json['message'], 'User registered.')
+            response = self.client.put('/api/admin/update/user', json=data0)
+            self.assertIn("updated", response.json['message'])
         else:
             self.assertEqual(True, False)
 
 
-    # # --- admin: UPDATE USER ---
 
-    # def test_admin_update_not_connected(self):
-    #     data0 = json.dumps({})
-    #     response = self.client.put('/api/admin/update/user', data=data0)
-    #     self.assertEqual(response.json['message'], 'User not authenticated.')
 
-    # def test_admin_update_no_permission(self):
-    #     self.login('riri@gmail.com', 'ririPass')
-    #     data0 = json.dumps({})
-    #     response = self.client.put('/api/admin/update/user', data=data0)
-    #     self.assertEqual(response.json['message'], 'User does not have permission.')
-
-    # def test_admin_update_no_fields(self):
-    #     self.login('daisy@gmail.com', 'daisyPass')
-    #     data0 = json.dumps({})
-    #     response = self.client.put('/api/admin/update/user', data=data0)
-    #     self.assertIn('Need', response.json['message'])
-
-    # def test_admin_update_empty_fields(self):
-    #     self.login('daisy@gmail.com', 'daisyPass')
-    #     data0 = json.dumps({
-    #         "id": 1,
-    #         "password": "",
-    #         "is_admin": false,
-    #     })
-    #     response = self.client.put('/api/admin/update/user', data=data0)
-    #     self.assertEqual(response.json['message'], 'Empty is_admin and/or password fields.')
-
-    # def test_admin_update_not_exists(self):
-    #     self.login('daisy@gmail.com', 'daisyPass')
-    #     data0 = json.dumps({
-    #         "id": 99,
-    #         "password": "",
-    #         "is_admin": false,
-    #     })
-    #     response = self.client.put('/api/admin/update/user', data=data0)
-    #     self.assertEqual(response.json['message'], 'User do not exist.')
-
-    # def test_admin_update_success(self):
-    #     self.login('daisy@gmail.com', 'daisyPass')
-    #     data0 = json.dumps({
-    #         "id": 1,
-    #         "password": "roroPass",
-    #         "is_admin": false, 
-    #     })
-    #     response = self.client.put('/api/admin/update/user', data=data0)
-    #     self.assertEqual(response.status_code, 200)
 
     # # --- admin: DELETE USER ---
 
