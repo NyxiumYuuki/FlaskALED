@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {Router} from "@angular/router";
 import {MessageService} from "../../common/services/message/message.service";
 import {HashageService} from "../../common/services/hashage/hashage.service";
+import {environment} from "../../../environments/environment";
 
 
 
@@ -26,6 +27,7 @@ export class PageLoginComponent
     // Appuie sur le bouton "seConnecter"
     onSeConnecter(): void
     {
+        console.log("test env: "+environment.api_url);
         this.checkField();
         if(!this.hasError)
         {

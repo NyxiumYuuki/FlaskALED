@@ -45,15 +45,15 @@ services:
       - flaskaled-srv1
       - flaskaled-srv2
     environment:
-      FLASK_APP: app.py
-      FLASK_ENV: development
-      FLASK_DEBUG: 1
-      PYTHONUNBUFFERED: 1
-      DATABASE_URL_USERS: postgresql://flaskaled1:aled1@flaskaled-srv1/flaskaledDb1
-      DATABASE_URL_LOGS: postgresql://flaskaled2:aled2@flaskaled-srv2/flaskaledDb2
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+      - PYTHONUNBUFFERED=1
+      - DATABASE_URL_USERS=postgresql://flaskaled1:aled1@flaskaled-srv1/flaskaledDb1
+      - DATABASE_URL_LOGS=postgresql://flaskaled2:aled2@flaskaled-srv2/flaskaledDb2
       #SECRET_KEY: default_secret_key
-      #ALLOW_ORIGIN: *
-#
+      #- ALLOW_ORIGIN=frontend
+
 #  frontend:
 #    container_name: frontend
 #    build: ./frontend
@@ -67,3 +67,6 @@ services:
 #      - backend
 #    links:
 #      - backend
+#    environment:
+#      - NODE_ENV=development
+#      - API_URL=http://backend/api
