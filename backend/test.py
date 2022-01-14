@@ -66,7 +66,7 @@ class FlaskTestCase(BaseTestCase):
             "password": "nimp"
         }
         response = self.client.post('/api/login', json=data0)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
 
     def test_login_wrongFields_message(self):
         data0 = {
@@ -492,7 +492,7 @@ class FlaskTestCase(BaseTestCase):
     def test_adminDelete_noFields_statusCode(self):
         response = self.login('daisy@gmail.com', 'daisyPass')
         self.assertEqual(response.status_code, 200)
-        response = self.client.delete('/api/admin/delete/user')
+        response = self.client.delete('/api/admin/delete/user/')
         self.assertEqual(response.status_code, 404)
 
     def test_adminDelete_no_fields(self):

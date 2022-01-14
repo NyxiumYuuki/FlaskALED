@@ -32,7 +32,7 @@ def login():
             elif res['status'] == 1:
                 user = None
                 token = create_auth_token(user)
-                return send_error(404, res['message'], token)
+                return send_error(400, res['message'], token)
         else:
             return send_error(400, 'Empty email and/or password fields.')
     except KeyError as e:

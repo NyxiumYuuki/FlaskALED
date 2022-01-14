@@ -1,7 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import sys
-import os
 
 db = SQLAlchemy()
 
@@ -23,13 +22,9 @@ def create_app(flask_env='development'):
     else:
         print('ENV Variables passed : ', app.config['SQLALCHEMY_BINDS'])
 
-    print('init_app')
     db.init_app(app)
     with app.app_context():
-        #print('import routes')
         from . import routes
         app.register_blueprint(routes.bp)
-        #print('db.create_all')
         db.create_all()
-        #print('db created')
     return app

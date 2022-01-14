@@ -10,3 +10,4 @@ PyJWT==2.3.0
 pytest==6.2.5
 SQLAlchemy==1.4.27
 psycopg2==2.9.2
+Flask-Cors==3.0.10
