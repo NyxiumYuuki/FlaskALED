@@ -51,8 +51,9 @@ services:
       - PYTHONUNBUFFERED=1
       - DATABASE_URL_USERS=postgresql://flaskaled1:aled1@flaskaled-srv1/flaskaledDb1
       - DATABASE_URL_LOGS=postgresql://flaskaled2:aled2@flaskaled-srv2/flaskaledDb2
-      #SECRET_KEY: default_secret_key
-      #- ALLOW_ORIGIN=frontend
+      - ALLOW_ORIGIN=frontend
+      - SECRET_KEY=default_secret_key
+
 
 #  frontend:
 #    container_name: frontend

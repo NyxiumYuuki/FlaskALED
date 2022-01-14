@@ -21,7 +21,7 @@ class Config(object):
     }
 
     SECRET_KEY = os.environ.get('SECRET_KEY', 'default_secret_key')
-    ALLOW_ORIGIN = os.environ.get('ALLOW_ORIGIN', '*')
+    ALLOW_ORIGIN = os.environ.get('ALLOW_ORIGIN', None)
 
 
 class ProductionConfig(Config):
