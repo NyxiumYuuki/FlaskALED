@@ -1,16 +1,10 @@
-from flask import current_app as app
 from flask import request, Blueprint
-from flask_cors import CORS
 from werkzeug.exceptions import HTTPException
 from .responses import send_message, send_error
 from .api_functions import db_login, db_register, db_user_update, db_create_log, db_user_delete, db_admin_update_user, db_users
 from .sessionJWT import create_auth_token, check_auth_token
 
 bp = Blueprint('myapp', __name__)
-origin = app.config.get('ALLOW_ORIGIN')
-if origin is None:
-    origin = ['http://127.0.0.1:4200', 'http://localhost:4200']
-CORS(bp, supports_credentials=True, origins=origin)
 
 
 @bp.app_errorhandler(HTTPException)
