@@ -1,7 +1,7 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {CheckEmailService} from "../../../common/services/checkEmail/check-email.service";
-import {HashageService} from "../../../common/services/hashage/hashage.service";
+import {MessageService} from "../../../common/services/message/message.service";
 
 
 
@@ -12,16 +12,12 @@ import {HashageService} from "../../../common/services/hashage/hashage.service";
 })
 export class PopupCreatePersonComponent
 {
-    person = {
-        id: "",
-        nickname: "",
-        email: "",
-        hash_pass: "",
-        is_admin: false,
-    };
+    nickname: string =  "";
+    email: string = "";
+    is_admin: boolean = false;
     password: string = "";
+
     confirmPassword: string = "" ;
-    changePassword: boolean = false ;
     hasError: boolean = false;
     errorMessage: string = "" ;
 
@@ -29,7 +25,7 @@ export class PopupCreatePersonComponent
     constructor( public dialogRef: MatDialogRef<PopupCreatePersonComponent>,
                  @Inject(MAT_DIALOG_DATA) public data: any,
                  private checkEmailService: CheckEmailService,
-                 private hashageService: HashageService ) { }
+                 private messageService: MessageService ) { }
 
 
     // Appuie sur le bouton "valider"
@@ -38,13 +34,15 @@ export class PopupCreatePersonComponent
         this.checkField();
         if(!this.hasError)
         {
-            if(this.changePassword) this.person.hash_pass = this.hashageService.run(this.password);
-            const data = { user: this.person };
-
-            // ...
-
-            // Faux code
-            this.onValiderCallback({ status: "success", data: {}});
+            const data = {
+                email: this.email,
+                nickname: this.nickname,
+                password: this.password,
+                is_admin: this.is_admin
+            };
+            this.messageService
+                .post("admin/create/user", data)
+                .subscribe(ret => this.onValiderCallback(ret), err => this.onValiderCallback(err));
         }
     }
 
@@ -52,19 +50,15 @@ export class PopupCreatePersonComponent
     // Callback de 'onValider'
     onValiderCallback(retour: any)
     {
-        if(retour.status === 'success')
-        {
-            this.dialogRef.close(retour);
-        }
-        else if(retour.status === 'error')
+        if(retour.status !== 'success')
         {
             console.log(retour);
-            this.errorMessage = retour.message;
+            this.errorMessage = retour.error.message;
             this.hasError = true;
         }
-        else {
-            console.log(retour);
-            this.dialogRef.close(null);
+        else
+        {
+            this.dialogRef.close(retour);
         }
     }
 
@@ -72,15 +66,15 @@ export class PopupCreatePersonComponent
     // Check les champs saisis par l'utilisateur
     checkField(): void
     {
-        if(this.person.nickname.length === 0) {
+        if(this.nickname.length === 0) {
             this.errorMessage = "Veuillez remplir le champ 'pseudo'.";
             this.hasError = true;
         }
-        else if(this.person.email.length === 0) {
+        else if(this.email.length === 0) {
             this.errorMessage = "Veuillez remplir le champ 'email'.";
             this.hasError = true;
         }
-        else if(!this.checkEmailService.isValidEmail(this.person.email)) {
+        else if(!this.checkEmailService.isValidEmail(this.email)) {
             this.errorMessage = "Email invalide.";
             this.hasError = true;
         }

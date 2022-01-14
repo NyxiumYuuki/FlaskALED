@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {CheckEmailService} from "../../../common/services/checkEmail/check-email.service";
-import {HashageService} from "../../../common/services/hashage/hashage.service";
+import {MessageService} from "../../../common/services/message/message.service";
 
 
 
@@ -12,15 +12,10 @@ import {HashageService} from "../../../common/services/hashage/hashage.service";
 })
 export class PopupUpdatePersonAdminComponent implements OnInit
 {
-    personCopy: any = {
-        id: "",
-        nickname: "",
-        email: "",
-        hash_pass: "",
-        is_admin: true,
-        role: "utilisateur"
-    };
+    id: number = 0;
+    is_admin: boolean = false;
     newPassword: string = "";
+
     confirmNewPassword: string = "" ;
     changePassword: boolean = false ;
     hasError: boolean = false;
@@ -30,41 +25,28 @@ export class PopupUpdatePersonAdminComponent implements OnInit
     constructor( public dialogRef: MatDialogRef<PopupUpdatePersonAdminComponent>,
                  @Inject(MAT_DIALOG_DATA) public data: any,
                  private checkEmailService: CheckEmailService,
-                 private hashageService: HashageService ) { }
+                 private messageService: MessageService ) { }
 
 
     ngOnInit(): void
     {
-        const person = this.data.person;
-        this.personCopy = {
-            id: person.id,
-            nickname: person.nickname,
-            email: person.email,
-            hash_pass: person.hash_pass,
-            is_admin: person.is_admin,
-            role: person.role,
-        };
-        console.log("ngOnInit")
-        console.log(this.personCopy);
+        this.id = this.data.person.id;
+        this.is_admin = this.data.person.is_admin;
     }
 
 
     // Appuie sur le bouton "valider"
     onValider(): void
     {
-        console.log("onValider")
-        console.log(this.personCopy);
-
         this.checkField();
         if(!this.hasError)
         {
-            if(this.changePassword) this.personCopy.hash_pass = this.hashageService.run(this.newPassword);
-            const data = { user: this.personCopy };
-
-            // ...
-
-            // Faux code
-            this.onValiderCallback({ status: "success"});
+            let data = {};
+            if(this.changePassword) data = { id: this.id, is_admin: this.is_admin, password: this.newPassword }
+            else data = { id: this.id, is_admin: this.is_admin };
+            this.messageService
+                .put("admin/update/user", data)
+                .subscribe(ret => this.onValiderCallback(ret), err => this.onValiderCallback(err));
         }
     }
 
@@ -72,14 +54,15 @@ export class PopupUpdatePersonAdminComponent implements OnInit
     // Callback de 'onValider'
     onValiderCallback(retour: any)
     {
-        if(retour.status === 'error')
+        if(retour.status !== 'success')
         {
             console.log(retour);
-            this.dialogRef.close(null);
+            this.errorMessage = retour.error.message;
+            this.hasError = true;
         }
         else
         {
-            this.dialogRef.close(this.personCopy);
+            this.dialogRef.close(this.is_admin);
         }
     }
 

@@ -7,13 +7,11 @@
         <mat-divider></mat-divider><br>
 
         <!-- role -->
-        <mat-radio-group [(ngModel)]="personCopy.is_admin">
+        <mat-radio-group [(ngModel)]="is_admin">
             <mat-radio-button [value]="false"
-                              [checked]="!personCopy.is_admin"
-                              (click)="personCopy.role = 'utilisateur'">Utilisateur</mat-radio-button> &nbsp;
+                              [checked]="!is_admin">Utilisateur</mat-radio-button> &nbsp;
             <mat-radio-button [value]="true"
-                              [checked]="personCopy.is_admin"
-                              (click)="personCopy.role = 'admin'">Admin</mat-radio-button>
+                              [checked]="is_admin">Admin</mat-radio-button>
         </mat-radio-group><br><br>
 
         <!-- divider -->

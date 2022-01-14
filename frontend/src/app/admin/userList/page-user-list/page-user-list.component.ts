@@ -77,6 +77,8 @@ export class PageUserListComponent implements AfterViewInit
                     this.snackBar.open( "Opération annulée", "", this.configSnackBar);
                 }
                 else {
+                    if(retour.data.is_admin) retour.data.role = "admin" ;
+                    else retour.data.role = "utilisateur" ;
                     this.dataSource.data.push(retour.data);
                     this.dataSource.data = this.dataSource.data;
                     this.dataSource = this.dataSource;
@@ -96,17 +98,17 @@ export class PageUserListComponent implements AfterViewInit
         this.dialog
             .open(PopupUpdatePersonAdminComponent, config)
             .afterClosed()
-            .subscribe( retour => {
+            .subscribe( is_admin => {
 
-                if((retour === null) || (retour === undefined))
+                if((is_admin === null) || (is_admin === undefined))
                 {
                     this.snackBar.open("Opération annulée", "", this.configSnackBar);
                 }
                 else {
-                    const index = this.dataSource.data.findIndex( elt => (elt.id === personToUpdate.id));
-                    this.dataSource.data.splice(index, 1, retour.data);
-                    this.dataSource.data = this.dataSource.data;
-                    this.dataSource = this.dataSource;
+                    const index = this.dataSource.data.findIndex(elt => (elt.id === personToUpdate.id));
+                    this.dataSource.data[index].is_admin = is_admin;
+                    if(is_admin) this.dataSource.data[index].role = "admin";
+                    else this.dataSource.data[index].role = "utilisateur";
                     this.snackBar.open("L'utilisateur a bien été modifié ✔", "", this.configSnackBar);
                 }
 
@@ -135,7 +137,7 @@ export class PageUserListComponent implements AfterViewInit
                 }
                 else if(retour.status === "error")
                 {
-                    this.snackBar.open(retour.message, "", this.configSnackBar);
+                    this.snackBar.open(retour.error.message, "", this.configSnackBar);
                 }
                 else {
                     const index = this.dataSource.data.findIndex( elt => (elt.id === personToDelete.id));

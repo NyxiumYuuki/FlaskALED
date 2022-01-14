@@ -39,10 +39,9 @@ export class PopupDeleteProfilComponent implements OnInit
                 .subscribe(ret => this.onValiderCallback(ret), err => this.onValiderCallback(err));
         }
         else {
-            let params = new HttpParams();
-            params = params.set("id", this.id);
+            //let params = (new HttpParams()).set("id", this.id);
             this.messageService
-                .delete("admin/delete", params)
+                .delete("admin/delete/user/"+this.id)
                 .subscribe(ret => this.onValiderCallback(ret), err => this.onValiderCallback(err));
         }
     }

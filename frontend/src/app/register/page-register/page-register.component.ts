@@ -15,13 +15,8 @@ import {MessageService} from "../../common/services/message/message.service";
 })
 export class PageRegisterComponent
 {
-    person = {
-        id: "",
-        nickname: "",
-        email: "",
-        hash_pass: "",
-        role: "user"
-    };
+    email: string = "";
+    nickname: string = "";
     password: string = "";
     confirmPassword: string = "";
     hasError: boolean = false;
@@ -41,8 +36,9 @@ export class PageRegisterComponent
         if(!this.hasError)
         {
             const data = {
-                email: this.person.email,
-                nickname: this.person.nickname,
+                email: this.email,
+                nickname: this.nickname,
+                password: this.password,
                 is_admin: false
             };
             this.messageService
@@ -58,7 +54,7 @@ export class PageRegisterComponent
         if(retour.status !== "success")
         {
             console.log(retour);
-            this.errorMessage = retour.message;
+            this.errorMessage = retour.error.message;
             this.hasError = true;
         }
         else {
@@ -73,15 +69,15 @@ export class PageRegisterComponent
     // Check les champs saisis par l'utilisateur
     checkField(): void
     {
-        if(this.person.nickname.length === 0) {
+        if(this.nickname.length === 0) {
             this.errorMessage = "Veuillez remplir le champ 'pseudo'.";
             this.hasError = true;
         }
-        else if(this.person.email.length === 0) {
+        else if(this.email.length === 0) {
             this.errorMessage = "Veuillez remplir le champ 'email'.";
             this.hasError = true;
         }
-        else if(!this.checkEmailService.isValidEmail(this.person.email)) {
+        else if(!this.checkEmailService.isValidEmail(this.email)) {
             this.errorMessage = "Email invalide.";
             this.hasError = true;
         }

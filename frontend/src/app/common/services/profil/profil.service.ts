@@ -8,8 +8,8 @@ export class ProfilService
 
     constructor()
     {
-        this.setId(-1);
-        this.setIsAdmin(false);
+        if(localStorage.getItem('id') === null) this.setId(-1);
+        if(localStorage.getItem('isAdmin') === null) this.setIsAdmin(false);
     }
 
     getId(): number
@@ -24,7 +24,7 @@ export class ProfilService
         localStorage.setItem('id', id.toString());
     }
 
-    getIsAdmin(): boolean
+    isAdmin(): boolean
     {
         let isAdminString = localStorage.getItem('isAdmin');
         if(isAdminString === "T") return true;

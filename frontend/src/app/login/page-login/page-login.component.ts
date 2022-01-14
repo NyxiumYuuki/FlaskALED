@@ -46,14 +46,14 @@ export class PageLoginComponent
         if(retour.status !== "success")
         {
             console.log(retour);
-            this.errorMessage = retour.message;
+            this.errorMessage = retour.error.message;
             this.hasError = true;
         }
         else {
             this.profilService.setId(retour.data.id);
             this.profilService.setIsAdmin(retour.data.is_admin)
             if(retour.data.is_admin) this.router.navigateByUrl('admin/userList');
-            else this.router.navigateByUrl('user/userList');
+            else this.router.navigateByUrl('user/registry');
         }
     }
 

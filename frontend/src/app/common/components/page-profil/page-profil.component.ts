@@ -40,10 +40,10 @@ export class PageProfilComponent implements OnInit
         else if(this.router.url.startsWith("/admin")) this.from = "admin" ;
 
         let params = new HttpParams()
-        params = params.set("order", "");
+        params = params.set("order_by", "nickname");
         params = params.set("id", this.profilService.getId());
         this.messageService
-            .get("user", params)
+            .get("users", params)
             .subscribe(ret => this.ngOnInitCallback(ret), err => this.ngOnInitCallback(err));
     }
 
@@ -103,7 +103,7 @@ export class PageProfilComponent implements OnInit
     onSupprimerCallback(retour: any): void
     {
         if((retour === null) || (retour === undefined)) this.snackBar.open( "Opération annulé", "", this.configSnackbar);
-        else if(retour.status === "error") this.snackBar.open(retour.message, "", this.configSnackbar);
+        else if(retour.status === "error") this.snackBar.open(retour.error.message, "", this.configSnackbar);
         else if(retour.status === "success") this.router.navigateByUrl("/login");
     }
 

@@ -5,6 +5,8 @@ import {PageRegisterComponent} from "./register/page-register/page-register.comp
 import {PageProfilComponent} from "./common/components/page-profil/page-profil.component";
 import {PageUserListComponent} from "./admin/userList/page-user-list/page-user-list.component";
 import {PageRegistryComponent} from "./user/page-registry/page-registry.component";
+import {UserGuard} from "./common/guards/user/user.guard";
+import {AdminGuard} from "./common/guards/admin/admin.guard";
 
 const routes: Routes = [
 
@@ -13,13 +15,13 @@ const routes: Routes = [
 
     { path: "register", component: PageRegisterComponent },
 
-    { path: "user", component: PageRegistryComponent },
-    { path: "user/registry", component: PageRegistryComponent },
-    { path: "user/myProfil", component: PageProfilComponent },
+    { path: "user", component: PageRegistryComponent, canActivate: [UserGuard] },
+    { path: "user/registry", component: PageRegistryComponent, canActivate: [UserGuard] },
+    { path: "user/myProfil", component: PageProfilComponent, canActivate: [UserGuard] },
 
-    { path: "admin", component: PageUserListComponent },
-    { path: "admin/userList", component: PageUserListComponent },
-    { path: "admin/myProfil", component: PageProfilComponent },
+    { path: "admin", component: PageUserListComponent, canActivate: [AdminGuard] },
+    { path: "admin/userList", component: PageUserListComponent, canActivate: [AdminGuard] },
+    { path: "admin/myProfil", component: PageProfilComponent, canActivate: [AdminGuard] },
 ];
 
 @NgModule({
