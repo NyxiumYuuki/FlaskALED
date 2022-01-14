@@ -54,20 +54,19 @@ services:
       - ALLOW_ORIGIN=frontend
       - SECRET_KEY=default_secret_key
 
-
-#  frontend:
-#    container_name: frontend
-#    build: ./frontend
-#    command: ng serve --host 0.0.0.0
-#    volumes:
-#      - ./frontend/src:/data/frontend/
-#      - ./frontend/node_modules:/data/frontend/node_modules
-#    ports:
-#      - "4200:4200"
-#    depends_on:
-#      - backend
-#    links:
-#      - backend
-#    environment:
-#      - NODE_ENV=development
-#      - API_URL=http://backend/api
+  frontend:
+    container_name: frontend
+    build: ./frontend
+    command: ng serve --host 0.0.0.0
+    volumes:
+      - ./frontend/src:/data/frontend/
+      - ./frontend/node_modules:/data/frontend/node_modules
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend
+    links:
+      - backend
+    environment:
+      - NODE_ENV=development
+      - API_URL=http://backend/api
