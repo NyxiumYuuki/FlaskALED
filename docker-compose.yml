@@ -69,4 +69,3 @@ services:
       - backend
     environment:
       - NODE_ENV=development
-      - API_URL=http://backend/api
