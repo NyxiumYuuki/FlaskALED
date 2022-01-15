@@ -57,9 +57,9 @@ services:
   frontend:
     container_name: frontend
     build: ./frontend
-    command: ng serve --host 0.0.0.0
+    command: npm start
     volumes:
-      - ./frontend/src:/data/frontend/
+      - ./frontend:/data/frontend
       - ./frontend/node_modules:/data/frontend/node_modules
     ports:
       - "4200:4200"
