@@ -34,6 +34,7 @@ services:
   backend:
     container_name: backend
     build: ./backend
+    command: python -m flask run --host=0.0.0.0
     ports:
       - "5000:5000"
     volumes:
@@ -58,14 +59,35 @@ services:
     container_name: frontend
     build: ./frontend
     command: npm start
+    ports:
+      - "4200:4200"
     volumes:
       - ./frontend:/data/frontend
       - ./frontend/node_modules:/data/frontend/node_modules
-    ports:
-      - "4200:4200"
     depends_on:
       - backend
     links:
       - backend
     environment:
       - NODE_ENV=development
+
+  test:
+    container_name: test
+    build: ./backend
+    command: python test.py
+    volumes:
+      - ./backend:/data/backend
+    depends_on:
+      - flaskaled-srv1
+      - flaskaled-srv2
+    links:
+      - flaskaled-srv1
+      - flaskaled-srv2
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=test
+      - FLASK_DEBUG=0
+      - PYTHONUNBUFFERED=1
+      - DATABASE_URL_USERS=postgresql://flaskaled1:aled1@flaskaled-srv1/flaskaledDb1
+      - DATABASE_URL_LOGS=postgresql://flaskaled2:aled2@flaskaled-srv2/flaskaledDb2
+      - SECRET_KEY=default_secret_key
