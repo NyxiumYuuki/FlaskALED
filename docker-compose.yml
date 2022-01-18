@@ -88,6 +88,6 @@ services:
       - FLASK_ENV=test
       - FLASK_DEBUG=0
       - PYTHONUNBUFFERED=1
-      - DATABASE_URL_USERS=postgresql://flaskaled1:aled1@flaskaled-srv1/flaskaledDb1
-      - DATABASE_URL_LOGS=postgresql://flaskaled2:aled2@flaskaled-srv2/flaskaledDb2
+      - DATABASE_URL_USERS=postgresql://flaskaled1:aled1@localhost:5433/flaskaledDb1
+      - DATABASE_URL_LOGS=postgresql://flaskaled2:aled2@localhost:5434/flaskaledDb2
       - SECRET_KEY=default_secret_key
