@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng build && node server.js",
-    "build": "ng build",
+    "start": "ng build --prod --build-optimizer --baseHref=”/static/” && node server.js",
+    "build": "ng build --prod --build-optimizer --baseHref=”/static/”",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
