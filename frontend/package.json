@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng build && python flask run",
-    "build": "ng build --build-optimizer --baseHref=frontend/dist",
+    "build": "ng build --build-optimizer --baseHref=frontend/dist/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
