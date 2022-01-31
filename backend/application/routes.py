@@ -139,7 +139,7 @@ def admin_create_user():
     try:
         post_ip = str(post_json['ip'])
         post_user_id = str(post_json['user_id'])
-        token_is_admin = str(post_json['token_is_admin'])
+        token_is_admin = bool(post_json['token_is_admin'])
         if token_is_admin:
             post_email = None
             post_nickname = None
@@ -208,7 +208,7 @@ def admin_update_user():
     try:
         post_ip = str(post_json['ip'])
         post_user_id = str(post_json['user_id'])
-        token_is_admin = str(post_json['token_is_admin'])
+        token_is_admin = bool(post_json['token_is_admin'])
         if token_is_admin:
             post_is_admin = None
             post_password = None
@@ -271,7 +271,7 @@ def admin_delete_user():
     try:
         post_ip = str(post_json['ip'])
         post_user_id = str(post_json['user_id'])
-        token_is_admin = str(post_json['token_is_admin'])
+        token_is_admin = bool(post_json['token_is_admin'])
         if token_is_admin:
             post_user_id_delete = None
             fields = ''
