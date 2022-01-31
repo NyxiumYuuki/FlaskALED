@@ -1,6 +1,6 @@
-FROM node:latest
-WORKDIR /app-frontend
-COPY ["package.json", "package-lock.json*", "./"]
-RUN npm install
-RUN npm install -g @angular/cli
+FROM python:latest
+WORKDIR /data/backend
+COPY requirements.txt requirements.txt
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
 COPY . .

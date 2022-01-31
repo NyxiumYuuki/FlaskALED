@@ -1,28 +1,29 @@
-from flask import request, Blueprint, render_template, current_app as app
+from flask import request, Blueprint, send_from_directory, current_app as app
+import requests
+import os
 from werkzeug.exceptions import HTTPException
 from .responses import send_message, send_error
-import requests
 from .sessionJWT import create_auth_token, check_auth_token
 
 
 # Request Post
 def request_post(url, data_json):
-    return requests.post(app.config['SQLALCHEMY_BINDS'] + url, json=data_json)
+    return requests.post(app.config['API_URL'] + url, json=data_json)
 
 
 # Request Put
 def request_put(url, data_json):
-    return requests.put(app.config['SQLALCHEMY_BINDS'] + url, json=data_json)
+    return requests.put(app.config['API_URL'] + url, json=data_json)
 
 
 # Request Get
 def request_get(url):
-    return requests.get(app.config['SQLALCHEMY_BINDS'] + url)
+    return requests.get(app.config['API_URL'] + url)
 
 
 # Request Delete
 def request_delete(url, data_json):
-    return requests.delete(app.config['SQLALCHEMY_BINDS'] + url, json=data_json)
+    return requests.delete(app.config['API_URL'] + url, json=data_json)
 
 
 bp = Blueprint('myapp', __name__)
@@ -35,7 +36,17 @@ def handle_exception(e):
 
 @bp.route('/', methods=['GET'])
 def root():
-    return render_template('index.html')
+    return send_from_directory("frontend/dist", "index.html")
+
+
+@bp.route('/frontend/dist/<path:path>', methods=['GET'])
+def static(path):
+    return send_from_directory("frontend/dist", path)
+
+
+@bp.route('/assets/<path:path>', methods=['GET'])
+def assets(path):
+    return send_from_directory("frontend/dist/assets", path)
 
 
 # Login

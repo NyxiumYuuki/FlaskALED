@@ -10,6 +10,7 @@ class Config(object):
 
     FLASK_APP = os.environ.get('FLASK_APP', None)
     FLASK_ENV = os.environ.get('FLASK_ENV', None)
+    FLASK_RUN_PORT = os.environ.get('FLASK_RUN_PORT', 4200)
 
     API_URL = os.environ.get('API_URL', 'http://127.0.0.1:5000/api/')
 
