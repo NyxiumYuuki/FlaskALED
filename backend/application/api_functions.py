@@ -329,25 +329,27 @@ def db_users(ip, user_id, query, by='email,nickname', id=None, is_admin=None, or
     if is_admin is not None:
         users = users.filter(Users.is_admin == is_admin)
 
-    order_by = order_by.split(',')
-    if order_by[0] == 'nickname':
-        order = Users.nickname
-    elif order_by[0] == 'id':
-        order = Users.id
-    elif order_by[0] == 'is_admin':
-        order = Users.is_admin
-    else:
-        order = Users.email
-
-    if len(order_by) > 1:
-        if order_by[1] == 'asc':
-            users = users.order_by(asc(order))
-        elif order_by[1] == 'desc':
-            users = users.order_by(desc(order))
+    if order_by is not None:
+        order_by = order_by.split(',')
+        if order_by[0] == 'nickname':
+            order = Users.nickname
+        elif order_by[0] == 'id':
+            order = Users.id
+        elif order_by[0] == 'is_admin':
+            order = Users.is_admin
+        else:
+            order = Users.email
+        if len(order_by) > 1:
+            if order_by[1] == 'asc':
+                users = users.order_by(asc(order))
+            elif order_by[1] == 'desc':
+                users = users.order_by(desc(order))
+            else:
+                users = users.order_by(asc(order))
         else:
             users = users.order_by(asc(order))
     else:
-        users = users.order_by(asc(order))
+        users = users.order_by(asc(Users.email))
 
     users = users.all()
 

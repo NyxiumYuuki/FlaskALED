@@ -324,6 +324,11 @@ def users():
     get_id = request.args.get('id')
     get_is_admin = request.args.get('is_admin')
     get_order_by = request.args.get('order_by')
+
+    if get_ip is None:
+        get_ip = request.remote_addr
+    if get_user_id is None:
+        get_user_id = 0
     res = db_users(get_ip, get_user_id, get_query, get_by, get_id, get_is_admin, get_order_by)
     if res['status'] == 1:
         return send_error(500, res['message'])
