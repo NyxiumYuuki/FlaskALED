@@ -60,11 +60,11 @@ def login():
             ip = request.remote_addr
             # res = db_login(ip, post_email, post_password)
             res = request_post('login', {'ip': ip, 'email': post_email, 'password': post_password}).json()
-            if res['status'] == 0:
+            if res['status'] == 'success':
                 user = res['data']
                 token = create_auth_token(user)
                 return send_message(res['message'], user, token)
-            elif res['status'] == 1:
+            elif res['status'] == 'error':
                 user = None
                 token = create_auth_token(user)
                 return send_error(400, res['message'], token)
@@ -87,9 +87,9 @@ def register():
             # res = db_register(ip, post_email, post_nickname, post_password)
             res = request_post('register', {'ip': ip, 'email': post_email, 'nickname': post_nickname,
                                             'password': post_password}).json()
-            if res['status'] == 1:
+            if res['status'] == 'error':
                 return send_error(500, res['message'])
-            elif res['status'] == 0:
+            elif res['status'] == 'success':
                 return send_message(res['message'], res['data'])
         else:
             return send_error(400, 'Empty email and/or password and/or nickname fields.')
@@ -104,9 +104,8 @@ def logout():
     if token['success']:
         ip = request.remote_addr
         user_id = token['payload']['id']
-        request_post('logout', {'ip': ip, 'user_id': user_id}).json()
-        message = 'User disconnected.'
-        return send_message(message, None, token_delete=True)
+        res = request_delete('logout', {'ip': ip, 'user_id': user_id}).json()
+        return send_message(res['message'], None, token_delete=True)
     else:
         return send_error(500, token['message'])
 
@@ -135,11 +134,11 @@ def user_update():
                 ip = request.remote_addr
                 user_id = token['payload']['id']
                 # res = db_user_update(ip, user_id, post_nickname, post_password)
-                res = request_post('user/update', {'ip': ip, 'user_id': user_id, 'nickname': post_nickname,
+                res = request_put('user/update', {'ip': ip, 'user_id': user_id, 'nickname': post_nickname,
                                                    'password': post_password}).json()
-                if res['status'] == 1:
+                if res['status'] == 'error':
                     return send_error(500, res['message'])
-                elif res['status'] == 0:
+                elif res['status'] == 'success':
                     return send_message(res['message'], res['data'])
             else:
                 return send_error(400, 'Empty nickname and/or password fields.')
@@ -157,8 +156,8 @@ def user_delete():
         ip = request.remote_addr
         user_id = token['payload']['id']
         # res = db_user_delete(ip, user_id)
-        res = request_post('user/delete', {'ip': ip, 'user_id': user_id}).json()
-        if res['status'] != 0:
+        res = request_delete('user/delete', {'ip': ip, 'user_id': user_id}).json()
+        if res['status'] != 'success':
             return send_error(500, res['message'])
         else:
             return send_message(res['message'], None, token_delete=True)
@@ -212,10 +211,10 @@ def admin_create_user():
                         'nickname': post_nickname,
                         'password': post_password,
                         'is_admin': post_is_admin
-                    })
-                    if res['status'] == 1:
+                    }).json()
+                    if res['status'] == 'error':
                         return send_error(500, res['message'])
-                    elif res['status'] == 0:
+                    elif res['status'] == 'success':
                         return send_message(res['message'], res['data'])
                 else:
                     return send_error(400, 'Empty email and/or nickname and/or password and/or is_admin fields.')
@@ -263,13 +262,13 @@ def admin_update_user():
                         'ip': ip,
                         'user_id': user_id,
                         'token_is_admin': is_admin,
-                        'user_id_delete': post_user_id_delete,
+                        'id': post_user_id_delete,
                         'is_admin': post_is_admin,
                         'password': post_password
-                    })
-                    if res['status'] == 1:
+                    }).json()
+                    if res['status'] == 'error':
                         return send_error(500, res['message'])
-                    elif res['status'] == 0:
+                    elif res['status'] == 'success':
                         return send_message(res['message'], res['data'])
                 else:
                     return send_error(400, 'Empty is_admin and/or password fields.')
@@ -304,9 +303,9 @@ def admin_delete_user(id):
                         'ip': ip,
                         'user_id': user_id,
                         'token_is_admin': is_admin,
-                        'user_id_delete': post_user_id_delete
-                    })
-                    if res['status'] == 1:
+                        'id': post_user_id_delete
+                    }).json()
+                    if res['status'] == 'error':
                         return send_error(500, res['message'])
                     else:
                         return send_message(res['message'], None)
@@ -327,23 +326,35 @@ def users():
     if token['success']:
         ip = request.remote_addr
         user_id = token['payload']['id']
+
+        filter = ''
         get_query = request.args.get('q')
+        if get_query is not None:
+            filter += f'&q={get_query}'
+
         get_by = request.args.get('by')
+        if get_by is not None:
+            filter += f'&by={get_by}'
+
         get_id = request.args.get('id')
+        if get_id is not None:
+            filter += f'&id={get_id}'
+
         get_is_admin = request.args.get('is_admin')
+        if get_is_admin is not None:
+            filter += f'&is_admin={get_is_admin}'
+
         get_order_by = request.args.get('order_by')
+        if get_order_by is not None:
+            filter += f'&order_by={get_order_by}'
         # res = db_users(ip, user_id, get_query, get_by, get_id, get_is_admin, get_order_by)
         res = request_get(
             'users'
             f'?ip={ip}'
             f'&user_id={user_id}'
-            f'&q={get_query}'
-            f'&by={get_by}'
-            f'&id={get_id}'
-            f'&is_admin={get_is_admin}'
-            f'&order_by={get_order_by}'
-        )
-        if res['status'] == 1:
+            f'{filter}'
+        ).json()
+        if res['status'] == 'error':
             return send_error(500, res['message'])
         else:
             return send_message(res['message'], res['data'])
