@@ -265,7 +265,7 @@ def admin_update_user():
 
 
 # Admin : Delete User
-@bp.route('/api/admin/delete/user/<id>', methods=['DELETE'])
+@bp.route('/api/admin/delete/user', methods=['DELETE'])
 def admin_delete_user(id):
     post_json = request.json
     try:
@@ -273,13 +273,12 @@ def admin_delete_user(id):
         post_user_id = str(post_json['user_id'])
         token_is_admin = str(post_json['token_is_admin'])
         if token_is_admin:
-            post_json = {'id': id}
             post_user_id_delete = None
             fields = ''
-            if 'id' in post_json:
-                post_user_id_delete = int(post_json['id'])
+            if 'user_id_delete' in post_json:
+                post_user_id_delete = int(post_json['user_id_delete'])
             else:
-                fields += 'id'
+                fields += 'user_id_delete'
             if post_user_id_delete is not None:
                 if str(post_user_id_delete) != '':
                     res = db_user_delete(post_ip, int(post_user_id_delete))
