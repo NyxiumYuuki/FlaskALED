@@ -92,7 +92,8 @@ def logout():
     token = check_auth_token(request)
     if token['success']:
         ip = request.remote_addr
-        request_post('logout', {'ip': ip}).json()
+        user_id = token['payload']['id']
+        request_post('logout', {'ip': ip, 'user_id': user_id}).json()
         message = 'User disconnected.'
         return send_message(message, None, token_delete=True)
     else:
@@ -194,6 +195,8 @@ def admin_create_user():
                     # res = db_register(ip, post_email, post_nickname, post_password, is_admin=post_is_admin)
                     res = request_post('admin/create/user', {
                         'ip': ip,
+                        'user_id': user_id,
+                        'token_is_admin': is_admin,
                         'email': post_email,
                         'nickname': post_nickname,
                         'password': post_password,
@@ -247,6 +250,8 @@ def admin_update_user():
                     # res = db_admin_update_user(ip, post_user_id_delete, post_is_admin, post_password)
                     res = request_put('admin/update/user', {
                         'ip': ip,
+                        'user_id': user_id,
+                        'token_is_admin': is_admin,
                         'user_id_delete': post_user_id_delete,
                         'is_admin': post_is_admin,
                         'password': post_password
@@ -271,7 +276,7 @@ def admin_delete_user(id):
     token = check_auth_token(request)
     if token['success']:
         ip = request.remote_addr
-        # user_id = token['payload']['id']
+        user_id = token['payload']['id']
         is_admin = token['payload']['is_admin']
         if is_admin:
             post_json = {'id': id}
@@ -284,8 +289,12 @@ def admin_delete_user(id):
             if post_user_id_delete is not None:
                 if str(post_user_id_delete) != '':
                     # res = db_user_delete(ip, int(post_user_id_delete))
-                    res = request_delete('admin/delete/user',
-                                         {'ip': ip, 'user_id_delete': post_user_id_delete, 'is_admin': is_admin})
+                    res = request_delete('admin/delete/user', {
+                        'ip': ip,
+                        'user_id': user_id,
+                        'token_is_admin': is_admin,
+                        'user_id_delete': post_user_id_delete
+                    })
                     if res['status'] == 1:
                         return send_error(500, res['message'])
                     else:
