@@ -266,7 +266,7 @@ def admin_update_user():
 
 # Admin : Delete User
 @bp.route('/api/admin/delete/user', methods=['DELETE'])
-def admin_delete_user(id):
+def admin_delete_user():
     post_json = request.json
     try:
         post_ip = str(post_json['ip'])
@@ -275,10 +275,10 @@ def admin_delete_user(id):
         if token_is_admin:
             post_user_id_delete = None
             fields = ''
-            if 'user_id_delete' in post_json:
-                post_user_id_delete = int(post_json['user_id_delete'])
+            if 'id' in post_json:
+                post_user_id_delete = int(post_json['id'])
             else:
-                fields += 'user_id_delete'
+                fields += 'id '
             if post_user_id_delete is not None:
                 if str(post_user_id_delete) != '':
                     res = db_user_delete(post_ip, int(post_user_id_delete))
@@ -329,6 +329,7 @@ def users():
         get_ip = request.remote_addr
     if get_user_id is None:
         get_user_id = 0
+    print(get_ip, get_user_id, get_query, get_by, get_id, get_is_admin, get_order_by)
     res = db_users(get_ip, get_user_id, get_query, get_by, get_id, get_is_admin, get_order_by)
     if res['status'] == 1:
         return send_error(500, res['message'])
