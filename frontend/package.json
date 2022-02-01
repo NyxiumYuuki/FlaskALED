@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng build && python flask run",
-    "build": "ng build --build-optimizer --baseHref=frontend/dist/",
+    "start": "ng build --build-optimizer --baseHref=frontend/backend/dist/ && cd .. && python -m flask run",
+    "build": "ng build --build-optimizer --baseHref=frontend/backend/dist/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

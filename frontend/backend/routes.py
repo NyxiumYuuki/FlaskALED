@@ -1,6 +1,5 @@
 from flask import request, Blueprint, send_from_directory, current_app as app
 import requests
-import os
 from werkzeug.exceptions import HTTPException
 from .responses import send_message, send_error
 from .sessionJWT import create_auth_token, check_auth_token
@@ -36,17 +35,17 @@ def handle_exception(e):
 
 @bp.route('/', methods=['GET'])
 def root():
-    return send_from_directory("frontend/dist", "index.html")
+    return send_from_directory("dist", "index.html")
 
 
-@bp.route('/frontend/dist/<path:path>', methods=['GET'])
+@bp.route('/frontend/backend/dist/<path:path>', methods=['GET'])
 def static(path):
-    return send_from_directory("frontend/dist", path)
+    return send_from_directory("dist", path)
 
 
 @bp.route('/assets/<path:path>', methods=['GET'])
 def assets(path):
-    return send_from_directory("frontend/dist/assets", path)
+    return send_from_directory("dist/assets", path)
 
 
 # Login
