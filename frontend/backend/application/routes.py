@@ -1,5 +1,8 @@
+print("Import Flask")
 from flask import request, Blueprint, send_from_directory, current_app as app
+print("Import Requests")
 import requests
+print("Import werkzeug")
 from werkzeug.exceptions import HTTPException
 from .responses import send_message, send_error
 from .sessionJWT import create_auth_token, check_auth_token
@@ -31,21 +34,6 @@ bp = Blueprint('myapp', __name__)
 @bp.app_errorhandler(HTTPException)
 def handle_exception(e):
     return send_error(e.code, e.name)
-
-
-@bp.route('/', methods=['GET'])
-def root():
-    return send_from_directory("dist", "index.html")
-
-
-@bp.route('/frontend/backend/dist/<path:path>', methods=['GET'])
-def static(path):
-    return send_from_directory("dist", path)
-
-
-@bp.route('/assets/<path:path>', methods=['GET'])
-def assets(path):
-    return send_from_directory("dist/assets", path)
 
 
 # Login

@@ -1,5 +1,8 @@
+print("Import datetime")
 from datetime import datetime, timedelta
+print("Import sessionJWT Flask")
 from flask import current_app as app
+print("Import jwt")
 import jwt
 
 

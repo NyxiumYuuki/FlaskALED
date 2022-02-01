@@ -1,4 +1,6 @@
+print("Import responses Flask")
 from flask import current_app as app
+print("Import Json")
 import json
 
 

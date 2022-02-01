@@ -1,8 +1,11 @@
+print("Import Flask")
 from flask import Flask
+print("Import Flask-Cors")
 from flask_cors import CORS
 
 
 def create_app(flask_env='development'):
+    print("create app")
     app = Flask(__name__, instance_relative_config=False, static_url_path='')
     origin = app.config.get('ALLOW_ORIGIN')
     if origin is None:

@@ -1,3 +1,4 @@
+print("Import os")
 import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -10,9 +11,9 @@ class Config(object):
 
     FLASK_APP = os.environ.get('FLASK_APP', None)
     FLASK_ENV = os.environ.get('FLASK_ENV', None)
-    FLASK_RUN_PORT = os.environ.get('FLASK_RUN_PORT', 4200)
+    FLASK_RUN_PORT = os.environ.get('FLASK_RUN_PORT', 5000)
 
-    API_URL = os.environ.get('API_URL', 'http://127.0.0.1:5000/api/')
+    API_URL = os.environ.get('API_URL', 'http://127.0.0.1:5001/api/')
 
     SECRET_KEY = os.environ.get('SECRET_KEY', 'default_secret_key')
     ALLOW_ORIGIN = os.environ.get('ALLOW_ORIGIN', None)
