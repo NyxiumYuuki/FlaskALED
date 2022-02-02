@@ -1,6 +1,4 @@
-print("Import backend")
 from application import create_app
-print("Import os")
 import os
 
 app = create_app(os.environ.get('FLASK_ENV'))
