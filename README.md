@@ -1,12 +1,12 @@
 # Projet Sécurité INFO5A 2022
 
-Auteurs:
+**Auteurs**:
 - Baptiste Peupier
 - Wilfried Vallée
 - Mihary Ranaivoson
 - Yûki Vachot
 
-Branches: 
+**Branches**: 
 - db1: Base de données Utilisateur
 - db2: Base de données Log
 - backend: Flask Backend
