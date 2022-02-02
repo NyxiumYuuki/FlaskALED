@@ -9,7 +9,7 @@ def create_app(flask_env='development'):
     app = Flask(__name__, instance_relative_config=False, static_url_path='')
     origin = app.config.get('ALLOW_ORIGIN')
     if origin is None:
-        origin = ['http://127.0.0.1:5000', 'http://localhost:5000']
+        origin = ['*']
     CORS(app, supports_credentials=True, origins=origin)
     if flask_env == 'production':
         app.config.from_object("config.ProductionConfig")
